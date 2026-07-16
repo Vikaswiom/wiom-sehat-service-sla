@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="सेहत गारंटी — अपने network की सेहत सुधारें, ₹10,000 पक्का।">
+<title>सेहत गारंटी</title>
+<style>
+:root{--maroon:#3f2a44;--purple:#6D17CE;--purpbg:#F4EBFC;--pill:#EBDDFB;--green:#008043;--green-bg:#E6F6EE;
+--amber:#B85C00;--amberbar:#E08A1E;--red:#D9202F;--yellow:#FFF6DA;--yellowline:#F2D98A;--text:#181022;
+--t2:#6b6478;--t3:#a8a2b4;--card:#fff;--screen:#F7F5FA;--line:#ECE7F2;--stroke2:#DED8EA;
+--teal:#0E6E6E;--tealbg:#E6F2F2;--tealline:#CFE4E4;}
+*{box-sizing:border-box;margin:0;font-family:"Noto Sans Devanagari","Nirmala UI","Segoe UI",system-ui,sans-serif;}
+html,body{background:var(--screen);}
+/* Devanagari needs room above & below the base line for matras — set a comfortable
+   base line-height that every text node inherits, so nothing falls back to ~1.2 and clips. */
+.wrap{min-height:100vh;background:var(--screen);color:var(--text);max-width:430px;margin:0 auto;line-height:1.5;}
+.hdr{background:var(--maroon);color:#fff;padding:13px 15px;display:flex;align-items:center;gap:11px;}
+.hdr .t{font-size:15.5px;font-weight:700;flex:1;}
+.subhdr{background:var(--maroon);color:#e8dcec;padding:0 15px 11px;display:flex;justify-content:space-between;font-size:12px;font-weight:600;}
+.body{padding:13px;display:flex;flex-direction:column;gap:11px;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:14px;}
+.k{font-size:12px;color:var(--t2);font-weight:600;}
+.earn-amt{font-size:30px;font-weight:800;letter-spacing:-1px;margin:5px 0 3px;font-variant-numeric:tabular-nums;}
+.earn-sub{font-size:11.5px;color:var(--green);font-weight:700;line-height:1.5;}
+.wyh-top{display:flex;align-items:baseline;gap:7px;margin:5px 0 2px;}
+.wyh-pct{font-size:31px;font-weight:800;letter-spacing:-1.5px;font-variant-numeric:tabular-nums;}
+.wyh-need{font-size:14px;font-weight:800;margin-top:9px;}
+.wyh-tgt{font-size:12.5px;color:var(--t3);font-weight:700;}
+.wyh-line{font-size:11.5px;color:var(--t2);line-height:1.5;margin-top:3px;}
+.bar{position:relative;height:11px;background:#EDEAF2;border-radius:6px;margin:12px 0 4px;}
+.bar .fill{position:absolute;left:0;top:0;bottom:0;border-radius:6px;transition:width .7s;}
+.bar .mk{position:absolute;left:80%;top:-4px;bottom:-4px;width:2px;background:#2a2130;}
+.f-green .wyh-pct{color:var(--green)}.f-green .fill{background:var(--green)}.f-green .wyh-need{color:var(--green)}
+.f-amber .wyh-pct{color:var(--amber)}.f-amber .fill{background:var(--amberbar)}.f-amber .wyh-need{color:var(--amber)}
+.f-red .wyh-pct{color:var(--red)}.f-red .fill{background:var(--red)}.f-red .wyh-need{color:var(--red)}
+.f-idle .wyh-pct{color:var(--t2)}.f-idle .fill{background:var(--stroke2)}.f-idle .wyh-need{color:var(--t2)}
+.act{background:var(--yellow);border:1px solid var(--yellowline);border-radius:15px;padding:13px;}
+.act .h{font-size:14px;font-weight:800;color:#7a4a00;}
+.act .s{font-size:11.5px;color:#8a6a30;font-weight:600;margin:8px 0 8px;}
+.tkt{background:#fff;border:1px solid #efe3c4;border-radius:11px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:7px;}
+.tkt .tn{font-size:12.5px;font-weight:700;line-height:1.5;}
+.tkt .tn em{font-style:normal;font-weight:600;color:#8a6a30;font-size:11px;}
+.tkt .tc{font-size:11px;font-weight:800;color:var(--purple);white-space:nowrap;flex:none;font-variant-numeric:tabular-nums;}
+.tkt .tc.warn{color:var(--red);}
+.act .fs{font-size:11px;color:#8a6a30;font-weight:600;line-height:1.5;}
+.wait{background:var(--tealbg);border:1px solid var(--tealline);border-radius:15px;padding:12px 13px;display:flex;gap:9px;}
+.wait .ic{font-size:15px;line-height:1.2;flex:none;}
+.wait .h{font-size:12.5px;font-weight:800;color:var(--teal);}
+.wait .s{font-size:11.5px;color:#3c5c5c;font-weight:600;line-height:1.55;margin-top:3px;}
+.prot{background:var(--purpbg);border:1px solid #e6d6fa;border-radius:16px;padding:14px;}
+.prot .ph{font-size:12.5px;font-weight:800;color:var(--purple);}
+.prot .big{font-size:24px;font-weight:800;color:var(--purple);letter-spacing:-1px;margin:6px 0 2px;line-height:1.35;}
+.prot .big span{font-size:13px;font-weight:700;color:#4a2a86;letter-spacing:normal;}
+.prot .when{font-size:11.5px;font-weight:800;color:#4a2a86;margin:8px 0 8px;}
+.cond{background:#fff;border:1px solid #ecdefb;border-radius:11px;padding:9px 11px;display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:7px;}
+/* NOT a flex container — the sentence contains a <b> run; flexing it would split
+   the text into separate items and spread them into ragged columns. Keep it a
+   normal inline flow so the emoji leads and the Hindi wraps as one paragraph. */
+.cond .cl{font-size:12px;font-weight:700;line-height:1.5;flex:1;}
+.cond .cl .em{font-size:14px;margin-right:6px;}
+.cond .cp{font-size:10px;font-weight:800;color:var(--purple);background:var(--pill);padding:3px 9px;border-radius:999px;white-space:nowrap;flex:none;}
+.prot .sb{font-size:11.5px;font-weight:800;color:#3a1a70;margin:9px 0 4px;}
+.prot .li{font-size:11.5px;color:#5a4a86;line-height:1.7;}
+.edu{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:14px 14px 5px;}
+.edu .eh{font-size:14px;font-weight:800;}
+.edu .es{font-size:11.5px;color:var(--t2);font-weight:600;margin:3px 0 8px;line-height:1.5;}
+.edu details{border-top:1px solid var(--line);}
+.edu summary{list-style:none;cursor:pointer;padding:11px 0;font-size:12.5px;font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.edu summary::-webkit-details-marker{display:none;}
+.edu summary:focus-visible{outline:2px solid var(--purple);outline-offset:2px;border-radius:6px;}
+.edu summary .cv{color:var(--purple);font-weight:800;font-size:15px;flex:none;transition:transform .2s;}
+.edu details[open] summary .cv{transform:rotate(45deg);}
+.edu .ans{font-size:12px;color:var(--t2);line-height:1.75;padding:0 0 12px;}
+.edu .ans b{color:var(--text);}
+.steps{display:flex;flex-direction:column;gap:7px;padding:2px 0 12px;}
+.step{display:flex;gap:9px;align-items:flex-start;}
+.step .n{flex:none;width:19px;height:19px;border-radius:6px;background:var(--pill);color:var(--purple);font-size:10.5px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+.step .st{font-size:12px;line-height:1.55;font-weight:600;}
+.step .st em{font-style:normal;color:var(--t2);}
+.foot{font-size:11px;color:var(--t3);text-align:center;padding:2px 6px 16px;line-height:1.5;}
+.skel{color:var(--t3);font-size:12.5px;font-weight:600;text-align:center;padding:34px 14px;line-height:1.7;}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hdr"><span class="t">सेहत गारंटी</span></div>
+  <div class="subhdr">
+    <span><span id="v_month">—</span> का हिसाब</span>
+    <span>इस महीने <span id="v_days">—</span> दिन बाकी</span>
+  </div>
+  <div class="body" id="body">
+    <div class="skel">आपका हिसाब लाया जा रहा है…</div>
+  </div>
+</div>
+
+<script>
+/* ── LIVE PER TAP ────────────────────────────────────────────────────────────
+   Paste a deployed Apps Script /exec URL here to query Metabase fresh for the
+   requested cspId on every open. Leave "" to serve the baked data.json snapshot
+   (refreshed by refresh.py). Same contract as wiom-mbg-kamai-kavach.          */
+var PROXY_URL = "";
+
+var TARGET = 80;   /* the ₹10,000 gate */
+var SPLIT  = 75;   /* the A/B track line — also the amber floor */
+
+/* ── WHO IS LOOKING? ─────────────────────────────────────────────────────────
+   This page cannot know which CSP tapped it. The id must arrive in the URL the
+   app opens (exactly like Kamai Kavach: /?cspId=a0b6f0). A bare link with no id
+   is NOT dynamic — it will show the "open it from the app" state.
+
+   To make the wiring impossible to get wrong, we accept the id in every shape:
+     1. ?cspId= / ?cspid= / ?csp_id= / ?id=      ← preferred, matches MBG
+     2. /wiom-sehat-mg/a0b6t9                    ← path style (via 404.html)
+     3. #a0b6t9  or  #cspId=a0b6t9               ← hash style
+     4. window.CSP_ID, or an Android/iOS bridge  ← native webview injection
+     5. sessionStorage                           ← remembered within the session
+   A CSP id looks like: a0b6t9  (letter + 5 alphanumerics).                    */
+var ID_RE = /^[a-z][a-z0-9]{4,9}$/;
+
+function cspIdFromUrl(){
+  var id = '';
+
+  // 1 · query string
+  var q = new URLSearchParams(location.search);
+  id = q.get('cspId') || q.get('cspid') || q.get('csp_id') || q.get('id') || '';
+
+  // 2 · hash — "#a0b6t9" or "#cspId=a0b6t9"
+  if (!id && location.hash){
+    var h = location.hash.slice(1);
+    id = h.indexOf('=') > -1 ? (new URLSearchParams(h).get('cspId') || '') : h;
+  }
+
+  // 3 · trailing path segment — /wiom-sehat-mg/a0b6t9  (404.html routes it here)
+  if (!id){
+    var seg = location.pathname.split('/').filter(Boolean).pop() || '';
+    if (seg && seg.indexOf('.') === -1 && ID_RE.test(seg.toLowerCase())) id = seg;
+  }
+
+  // 4 · injected by the native webview
+  if (!id){
+    try{
+      id = window.CSP_ID || window.cspId || '';
+      if (!id && window.Android && typeof window.Android.getCspId === 'function') id = window.Android.getCspId();
+    }catch(e){}
+  }
+
+  id = String(id || '').trim().toLowerCase();
+
+  // 5 · remember / recall within the session (survives in-app back-and-forth)
+  try{
+    if (id) sessionStorage.setItem('sehat_csp', id);
+    else    id = (sessionStorage.getItem('sehat_csp') || '').toLowerCase();
+  }catch(e){}
+
+  return ID_RE.test(id) ? id : '';
+}
+
+/* raw inputs only: {ok, all, sok, stot, cn, tr, op0} — every number on screen is derived */
+async function getCsp(){
+  var id = cspIdFromUrl();
+  if (!id) return null;
+  if (PROXY_URL){
+    try{
+      var sep = PROXY_URL.indexOf('?') > -1 ? '&' : '?';
+      var r = await fetch(PROXY_URL + sep + 'cspId=' + encodeURIComponent(id), {cache:'no-store'});
+      var j = await r.json();
+      if (j && (j.all !== undefined || j.stot !== undefined)) { j.id = id; return j; }
+    }catch(e){}
+  }
+  try{
+    var s = await fetch('data.json', {cache:'no-store'});
+    var D = (await s.json()).data || {};
+    if (!D[id]) return null;
+    var rec = D[id]; rec.id = id; return rec;
+  }catch(e){ return null; }
+}
+
+function compute(d){
+  var op  = d.all  ? d.ok  / d.all  * 100 : null;   /* % Optical Power · 15 telemetry days */
+  var sla = d.stot ? d.sok / d.stot * 100 : null;   /* % समय पर समाधान · 60-day lookback   */
+  var track = d.tr === 'A' ? 'A' : 'B';             /* 'U' (no telemetry) → SLA-only, i.e. B */
+  var val = track === 'A' ? op : sla;
+  var ist = new Date(Date.now() + 330*60000);
+  var im1 = ist.getUTCMonth() + 1;
+  var dim = new Date(Date.UTC(ist.getUTCFullYear(), im1, 0)).getUTCDate();
+  var days = Math.max(0, dim - ist.getUTCDate());
+  /* §5 grade window — Track A: last 5 days of the month · Track B: last 15 days */
+  var gwin = track === 'A' ? 5 : 15;
+  return {
+    op:op, sla:sla, val:val, track:track, unclassified:(d.tr === 'U'),
+    band: val == null ? 'idle' : (val >= TARGET ? 'green' : val >= SPLIT ? 'amber' : 'red'),
+    gap:  val == null ? null   : Math.max(1, Math.ceil(TARGET - val)),
+    days: days,
+    gwin: gwin,                          /* graded over the last gwin days */
+    inWin: days <= gwin,                 /* are we inside the graded window right now? */
+    month: ['जनवरी','फ़रवरी','मार्च','अप्रैल','मई','जून','जुलाई','अगस्त','सितंबर','अक्टूबर','नवंबर','दिसंबर'][im1-1]
+  };
+}
+
+function n(x){ return Number(x).toLocaleString('en-IN'); }
+function step(i,t,s){ return '<div class="step"><span class="n">'+i+'</span><span class="st">'+t+'<br><em>'+s+'</em></span></div>'; }
+function row(t,s,c,warn){ return '<div class="tkt"><span class="tn">'+t+'<br><em>'+s+'</em></span><span class="tc'+(warn?' warn':'')+'">'+c+'</span></div>'; }
+function faq(a){ return a.map(function(f){ return '<details><summary>'+f[0]+'<span class="cv">+</span></summary>'+f[1]+'</details>'; }).join(''); }
+
+function render(d, m){
+  var A      = m.track === 'A';
+  var metric = A ? 'Optical Power' : 'समय पर समाधान';
+  var pct    = m.val == null ? '—' : m.val.toFixed(0);
+  var late   = (d.stot || 0) - (d.sok || 0);
+
+  var need = m.val == null      ? 'गिनती शुरू होते ही यहाँ दिखेगा'
+           : m.band === 'green' ? '✓ 80% पूरा — ₹10,000 पक्का'
+           : m.band === 'amber' ? 'बस ' + m.gap + '% और'
+           :                      m.gap + '% और चाहिए — 80% पर ₹10,000';
+
+  var sub = A
+    ? (d.all  ? n(d.all) + ' ping में से ' + n(d.ok) + ' सही = ' + pct + '% · पिछले 15 दिन का औसत'
+              : 'आपके network से अभी telemetry नहीं आ रही')
+    : (d.stot ? d.stot + ' शिकायत · ' + d.sok + ' चार घंटे में बंद, ' + late + ' देर से = ' + pct + '% · पिछले 60 दिन का औसत'
+              : 'पिछले 60 दिन में कोई शिकायत नहीं आई — जो आए, 4 घंटे में बंद कीजिए');
+  if (m.band === 'green') sub += A ? ' · महीने के आख़िर तक ऐसे ही बनाए रखें' : ' · नई शिकायत आने पर % बदल सकता है';
+
+  var actH, actS, actRows, actF;
+  if (A){
+    var wk = d.wk || [];
+    if (wk.length){
+      /* whom to treat — the real out-of-range ONTs, worst-first (§7) */
+      actH = '🔧 आज ये कनेक्शन ठीक करें';
+      actS = (d.wn || wk.length) + ' कनेक्शन कमज़ोर — सबसे ख़राब पहले:';
+      actRows = wk.map(function(w){
+        return row('ONT ' + w.d, (w.a ? '📍 ' + w.a : 'signal कमज़ोर — जाकर ठीक करें'), w.v + ' dBm', true);
+      }).join('');
+      actF = 'ये आपके सबसे कमज़ोर कनेक्शन हैं — इन्हें ठीक करते ही Optical Power ऊपर जाएगा. <b>कैसे ठीक करें</b> नीचे “समझ लीजिए” में. बहुत ख़राब हो तो helpline पर call कीजिए — field visit मिलेगी.';
+    } else {
+      actH = '🔧 आज का काम';
+      actS = 'अभी कोई कनेक्शन out-of-range नहीं दिख रहा — बढ़िया!';
+      actRows = row('जो चल रहा है, वैसा ही बनाए रखें','नया कनेक्शन कमज़ोर दिखे तो यहीं आएगा','✓') ;
+      actF = 'telemetry हर दिन update होती है. कैसे network स्वस्थ रखें — नीचे “समझ लीजिए” में.';
+    }
+  } else {
+    actH = '🔥 आज ये आदत बनाइए';
+    actS = late > 0 ? 'पिछले 60 दिन में ' + late + ' शिकायत देर से बंद हुई — हर एक % नीचे खींचती है:'
+                    : 'हर शिकायत 4 घंटे के अंदर बंद होनी चाहिए:';
+    actRows = row('शिकायत आते ही ग्राहक को call करें','2 मिनट की call, आधा काम वहीं हो जाता है','तुरंत') +
+              row('उसी दिन जाइए — कल पर मत छोड़िए','कल गए तो 4 घंटे कब के निकल गए','उसी दिन') +
+              row('ठीक करते ही app में बंद mark करें','App में बंद नहीं किया = समय पर नहीं गिना','ज़रूरी');
+    actF = 'रोज़ सुबह खुले ticket देखिए — दिन की शुरुआत यहीं से.';
+  }
+
+  /* §5 grading window — the ₹10,000 is decided on the LAST 5 (A) / 15 (B) days of the month,
+     not on today's rolling number. §7 says step this up as the window nears. */
+  var waitH, waitS;
+  if (m.inWin){
+    waitH = '📅 यही दिन गिने जाएँगे';
+    waitS = A
+      ? 'आपका ₹10,000 महीने के <b>आख़िरी 5 दिन</b> के Optical Power पर तय होगा — और वो window अभी चल रही है. इन दिनों का number ही final है, इसलिए अभी सुधार सबसे ज़्यादा मायने रखता है.'
+      : 'आपका ₹10,000 महीने के <b>आख़िरी 15 दिन</b> के समय पर समाधान पर तय होगा — और वो window अभी चल रही है. अभी बंद किया हर ticket सीधे grade में जुड़ेगा.';
+  } else {
+    waitH = A ? 'सुधार दिखने में एक दिन लगता है' : 'ये 60 दिन का average है';
+    waitS = A
+      ? 'ऊपर का number पिछले 15 दिन की ping का औसत है — रोज़ का checkup. पैसा महीने के <b>आख़िरी 5 दिन</b> के Optical Power पर तय होगा, इसलिए तब तक सुधार टिका रहना चाहिए. आज joint ठीक किया तो कल से चढ़ना शुरू होगा.'
+      : 'ऊपर का number पिछले 60 दिन का average है — रोज़ का checkup. पैसा महीने के <b>आख़िरी 15 दिन</b> के समय पर समाधान पर तय होगा. हर ticket जो आप समय पर बंद करेंगे, उसे रोज़ ऊपर ले जाएगा.';
+  }
+
+  var fine = (A
+    ? '· इस महीने सिर्फ़ Optical Power गिना जाएगा — service वाला number मायने नहीं रखता'
+    : '· इस महीने सिर्फ़ समय पर समाधान गिना जाएगा — Optical Power मायने नहीं रखता') +
+    '<br>· ये ₹10,000 आपकी install और service की कमाई के <b>ऊपर</b> है' +
+    '<br>· 80% न छू पाए तो कोई कटौती नहीं — बस ये bonus नहीं मिलेगा';
+
+  var qa = A ? [
+    ['Optical Power है क्या?',
+     '<div class="ans">आपकी fibre में <b>light की ताक़त</b>. Light कमज़ोर पड़ी तो ग्राहक का net धीमा चलेगा, कटता-जुड़ता रहेगा — और शिकायत आपके पास आएगी.<br><br>हम आपके हर कनेक्शन को दिन भर <b>ping</b> करते हैं. जो ping सही range में आया, वो सही. <b>100 ping में जितने सही, वही आपकी सेहत %.</b></div>'],
+    ['80% का मतलब क्या है?',
+     '<div class="ans">हर 100 ping में कम से कम <b>80 सही</b>. अभी आपके <b>' + pct + ' सही</b> हैं' + (m.gap ? ' — यानी <b>' + m.gap + '% और</b> चाहिए' : '') + '.<br><br>ये पिछले <b>15 दिन</b> की सारी ping जोड़कर निकलता है, किसी एक दिन का नहीं.</div>'],
+    ['कैसे ठीक करें? — 5 काम',
+     '<div class="steps">' +
+       step(1,'पुराना joint / splice दोबारा करें','सबसे बड़ी वजह यही है') +
+       step(2,'Connector साफ़ करें','धूल से light 3–4 dB तक गिर जाती है') +
+       step(3,'Fibre का तीखा मोड़ सीधा करें','दीवार के कोने और खिड़की के पास') +
+       step(4,'Splitter पर load बाँटें','एक ही splitter पर बहुत ज़्यादा कनेक्शन न रखें') +
+       step(5,'ख़राब patch cord बदल दें','सस्ता काम, सबसे तेज़ फ़ायदा') +
+     '</div>'],
+    ['कहाँ से शुरू करूँ?',
+     '<div class="ans">ऊपर पीले box में जो <b>ONT दिख रहे हैं — वही सबसे कमज़ोर हैं</b> (सबसे कम signal वाले पहले). उन्हीं से शुरू कीजिए.<br><br>−25 dBm से नीचे वाला हर कनेक्शन “out of range” गिना जाता है' + (m.op != null && d.wn ? ' — आपके <b>' + n(d.wn) + '</b> ऐसे हैं' : '') + '. एक-एक ठीक करेंगे तो % अपने आप चढ़ेगा. बहुत ख़राब हो तो <b>priority helpline</b> और field visit भी है.</div>'],
+    ['मुझे ये क्यों मिला?',
+     '<div class="ans">आप इस बार install वाली गारंटी में नहीं आ पाए. इसलिए हमने आपके लिए <b>दूसरा रास्ता</b> बनाया — अपने network की सेहत सुधारिए, वही ₹10,000.<br><br>ये पूरी तरह <b>आपके हाथ में</b> है: न lead का इंतज़ार, न ग्राहक की “हाँ” का.</div>']
+  ] : [
+    ['समय पर समाधान है क्या?',
+     '<div class="ans">शिकायत आने के <b>4 घंटे के अंदर</b> बंद हुई = समय पर.<br><br>पिछले <b>60 दिन</b> की आपकी सारी शिकायतें गिनी जाती हैं — उनमें से कितनी 4 घंटे में बंद हुईं, वही आपका %. अभी: <b>' + (d.stot || 0) + ' में से ' + (d.sok || 0) + '</b>.</div>'],
+    ['80% का मतलब क्या है?',
+     '<div class="ans">हर 100 शिकायत में कम से कम <b>80</b> चार घंटे के अंदर बंद. अभी आपकी <b>' + pct + '</b> हैं' + (m.gap ? ' — यानी <b>' + m.gap + '% और</b> चाहिए' : '') + '.<br><br>एक भी देर से बंद हुई शिकायत % नीचे खींचती है.</div>'],
+    ['कैसे सुधारें? — 4 काम',
+     '<div class="steps">' +
+       step(1,'शिकायत आते ही ग्राहक को call करें','2 मिनट की call, आधा काम वहीं हो जाता है') +
+       step(2,'उसी दिन जाइए','कल गए तो 4 घंटे कब के निकल गए') +
+       step(3,'ठीक करते ही app में बंद mark करें','App में बंद नहीं किया = समय पर नहीं गिना') +
+       step(4,'रोज़ सुबह खुले ticket देखें','दिन की शुरुआत यहीं से') +
+     '</div>'],
+    ['Technician भेजूँ या ख़ुद जाऊँ?',
+     '<div class="ans">जो भी तेज़ हो. गिनती सिर्फ़ इस बात की है कि <b>4 घंटे में शिकायत बंद हुई या नहीं</b> — कौन गया, ये मायने नहीं रखता.</div>'],
+    ['मुझे ये क्यों मिला?',
+     '<div class="ans">आप इस बार install वाली गारंटी में नहीं आ पाए. इसलिए हमने आपके लिए <b>दूसरा रास्ता</b> बनाया.<br><br>' +
+       (m.unclassified
+         ? 'आपके network से अभी optical telemetry नहीं आ रही, इसलिए आपको <b>service ट्रैक</b> पर रखा है — काम है service तेज़ करना.'
+         : 'आपका <b>network पहले से स्वस्थ है</b> (Optical Power ' + (m.op != null ? m.op.toFixed(0) + '%' : '—') + ') — इसे बनाए रखिए, और अपनी <b>service को भी उतना ही अच्छा</b> कीजिए.') +
+       ' ये पूरी तरह आपके हाथ में है.</div>']
+  ];
+
+  document.getElementById('body').innerHTML =
+    '<div class="card">' +
+      '<div class="k">आपकी गारंटी — इस महीने</div>' +
+      '<div class="earn-amt">₹10,000</div>' +
+      '<div class="earn-sub">' + (A
+        ? 'आपके network की Optical Power 80% → पूरे ₹10,000, बाकी कमाई के ऊपर'
+        : 'हर शिकायत 4 घंटे में बंद, 80% → पूरे ₹10,000, बाकी कमाई के ऊपर') + '</div>' +
+    '</div>' +
+
+    '<div class="card f-' + m.band + '">' +
+      '<div class="k">आप कहाँ हैं</div>' +
+      '<div class="wyh-top"><span class="wyh-pct">' + pct + (m.val == null ? '' : '%') + '</span>' +
+        '<span class="wyh-tgt">/ 80% चाहिए · ' + metric + '</span></div>' +
+      '<div class="bar"><div class="fill" style="width:' + Math.min(100, m.val || 0) + '%"></div><div class="mk"></div></div>' +
+      '<div class="wyh-need">' + need + '</div>' +
+      '<div class="wyh-line">' + sub + '</div>' +
+    '</div>' +
+
+    '<div class="act">' +
+      '<div class="h">' + actH + '</div><div class="s">' + actS + '</div>' + actRows +
+      '<div class="fs">' + actF + '</div>' +
+    '</div>' +
+
+    '<div class="wait"><span class="ic">⏱</span><div>' +
+      '<div class="h">' + waitH + '</div><div class="s">' + waitS + '</div></div>' +
+    '</div>' +
+
+    '<div class="prot">' +
+      '<div class="ph">🛡 आपकी सुरक्षा</div>' +
+      '<div class="big">₹10,000 <span>पूरे — एक ही शर्त पर</span></div>' +
+      '<div class="when">कब मिलेगा? — बस एक शर्त</div>' +
+      '<div class="cond"><div class="cl"><span class="em">' + (A ? '🩺' : '⏱') + '</span>' +
+        'महीने के <b>आख़िरी ' + m.gwin + ' दिन</b> में आपका ' + metric + ' 80% या ऊपर</div><span class="cp">आपका वादा</span></div>' +
+      '<div class="cond"><div class="cl"><span class="em">🤝</span>' +
+        'अगले महीने 1 तारीख को ₹10,000 आपके खाते में</div><span class="cp">व्योम का वादा</span></div>' +
+      '<div class="sb">साफ़ बात</div><div class="li">' + fine + '</div>' +
+    '</div>' +
+
+    '<div class="edu">' +
+      '<div class="eh">📚 समझ लीजिए — 2 मिनट</div>' +
+      '<div class="es">' + metric + ' ही इस महीने आपके ₹10,000 तय करता है.</div>' +
+      faq(qa) +
+    '</div>' +
+
+    '<div class="foot">एक बार शामिल — हर महीने नया target, नया ₹10,000.<br>सवाल हो तो helpline पर call कीजिए.</div>';
+}
+
+(async function(){
+  var m0 = compute({});
+  document.getElementById('v_month').textContent = m0.month;
+  document.getElementById('v_days').textContent  = m0.days;
+
+  var d = await getCsp();
+  if (!d){
+    document.getElementById('body').innerHTML = '<div class="skel">' + (cspIdFromUrl()
+      ? 'आपका हिसाब अभी तैयार नहीं है.<br>कल फिर देखिए, या helpline पर call कीजिए.'
+      : 'ये पेज आपकी CSP ID के साथ खुलता है.<br>App में “सेहत गारंटी” पर tap कीजिए.') + '</div>';
+    return;
+  }
+  var m = compute(d);
+  render(d, m);
+
+  /* analytics — bridge-safe no-op, same as the Kamai Kavach page */
+  try{
+    var ev = 'Sehat_View_' + m.track + '_' + m.band;
+    var b  = window.CleverTap;
+    if (b && b.pushEvent) b.pushEvent(ev);
+    if (window.console) console.log('[Sehat]', ev, 'csp=' + d.id);
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
