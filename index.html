@@ -111,7 +111,7 @@ var SPLIT  = 75;   /* the A/B track line — also the amber floor */
 
 /* ── METRIC IS LOCKED BY DEPLOYMENT (not by the CSP's track) ──────────────────
    The service-sla site ALWAYS shows Service SLA; every other deployment (the
-   wiom-sehat-mg site) ALWAYS shows Optical Power. One shared file, self-configuring
+   wiom-sehat-mg site) ALWAYS shows ऑप्टिकल पॉवर. One shared file, self-configuring
    by URL — send the optical link to your Track-A cohort and the service link to
    your Track-B cohort. Override with ?track=A|B for previewing either screen.   */
 var FORCE_TRACK = (function(){
@@ -193,7 +193,7 @@ async function getCsp(){
 }
 
 function compute(d){
-  var op  = d.all  ? d.ok  / d.all  * 100 : null;   /* % Optical Power · 15 telemetry days */
+  var op  = d.all  ? d.ok  / d.all  * 100 : null;   /* % ऑप्टिकल पॉवर · 15 telemetry days */
   var sla = d.stot ? d.sok / d.stot * 100 : null;   /* % समय पर समाधान · 60-day lookback   */
   var track = FORCE_TRACK;                          /* metric locked by deployment, not by d.tr */
   var val = track === 'A' ? op : sla;
@@ -227,7 +227,7 @@ function faq(a){ return a.map(function(f){ return '<details><summary>'+f[0]+'<sp
 
 function render(d, m){
   var A      = m.track === 'A';
-  var metric = A ? 'Optical Power' : 'समय पर समाधान';
+  var metric = A ? 'ऑप्टिकल पॉवर' : 'समय पर समाधान';
   var pct    = m.val == null ? '—' : m.val.toFixed(0);
   var late   = (d.stot || 0) - (d.sok || 0);
 
@@ -253,9 +253,9 @@ function render(d, m){
       actRows = wk.map(function(w){
         return row('ONT ' + w.d, (w.a ? '📍 ' + w.a : 'सिग्नल कमज़ोर — जाकर ठीक करें'), w.v + ' dBm', true);
       }).join('');
-      actF = 'ये आपके सबसे कमज़ोर कनेक्शन हैं — इन्हें ठीक करते ही Optical Power ऊपर जाएगा.';
+      actF = 'ये आपके सबसे कमज़ोर कनेक्शन हैं — इन्हें ठीक करते ही ऑप्टिकल पॉवर ऊपर जाएगा.';
     } else {
-      actH = 'Optical Power ऐसा ही बनाए रखें';
+      actH = 'ऑप्टिकल पॉवर ऐसा ही बनाए रखें';
       actS = ''; actRows = ''; actF = '';
     }
   } else {
@@ -281,12 +281,12 @@ function render(d, m){
   if (m.inWin){
     waitH = '📅 यही दिन गिने जाएँगे';
     waitS = A
-      ? 'आपका ₹10,000 साइकिल के <b>आख़िरी 5 दिन</b> के Optical Power पर तय होगा और वो विंडो अभी चल रही है. इन दिनों का नंबर ही पक्का है, इसलिए अभी सुधार सबसे ज़्यादा मायने रखता है.'
+      ? 'आपका ₹10,000 साइकिल के <b>आख़िरी 5 दिन</b> के ऑप्टिकल पॉवर पर तय होगा और वो विंडो अभी चल रही है. इन दिनों का नंबर ही पक्का है, इसलिए अभी सुधार सबसे ज़्यादा मायने रखता है.'
       : 'आपका ₹10,000 साइकिल के <b>आख़िरी 15 दिन</b> के समय पर समाधान पर तय होगा और वो विंडो अभी चल रही है. अभी बंद किया हर टिकट सीधे आपका % में जुड़ेगी.';
   } else {
     waitH = A ? 'सुधार दिखने में एक दिन लगता है' : 'ये 60 दिन का एवरेज है';
     waitS = A
-      ? 'ऊपर का नंबर पिछले 15 दिन की पिंग का एवरेज है.<br>यह रोज़ का चेक होता है.<br>पैसा साइकिल के <b>आख़िरी 5 दिन</b> के Optical Power पर तय होगा, इसलिए तब तक सुधार टिका रहना चाहिए.'
+      ? 'ऊपर का नंबर पिछले 15 दिन की पिंग का एवरेज है.<br>यह रोज़ का चेक होता है.<br>पैसा साइकिल के <b>आख़िरी 5 दिन</b> के ऑप्टिकल पॉवर पर तय होगा, इसलिए तब तक सुधार टिका रहना चाहिए.'
       : 'ऊपर का नंबर पिछले 60 दिन का एवरेज है.<br>यह रोज़ का चेक होता है.<br>पैसा साइकिल के <b>आख़िरी 15 दिन</b> के समय पर समाधान पर तय होगा, इसलिए तब तक हर टिकट समय से बंद करते रहिए.';
   }
 
@@ -295,7 +295,7 @@ function render(d, m){
     '<br>· 80% न छू पाए तो कोई कटौती नहीं — बस ये bonus नहीं मिलेगा';
 
   var qa = A ? [
-    ['Optical Power है क्या?',
+    ['ऑप्टिकल पॉवर है क्या?',
      '<div class="ans">आपकी fibre में <b>light की ताक़त</b>. Light कमज़ोर पड़ी तो कनेक्शन का net धीमा चलेगा, कटता-जुड़ता रहेगा — और शिकायत आपके पास आएगी.<br><br>हम आपके हर कनेक्शन को दिन भर <b>ping</b> करते हैं. जो ping सही range में आया, वो सही. <b>100 ping में जितने सही, वही आपकी सेहत %.</b></div>'],
     ['80% का मतलब क्या है?',
      '<div class="ans">हर 100 ping में कम से कम <b>80 सही</b>. अभी आपके <b>' + pct + ' सही</b> हैं' + (m.gap ? ' — यानी <b>' + m.gap + '% और</b> चाहिए' : '') + '.<br><br>ये पिछले <b>15 दिन</b> की सारी ping जोड़कर निकलता है, किसी एक दिन का नहीं.</div>'],
@@ -320,7 +320,7 @@ function render(d, m){
       '<div class="k">आपकी गारंटी — इस साइकिल</div>' +
       '<div class="earn-amt">₹10,000</div>' +
       '<div class="earn-sub">' + (A
-        ? 'आपके नेटवर्क की Optical Power 80% → पूरे ₹10,000, बाकी कमाई के ऊपर'
+        ? 'आपके नेटवर्क की ऑप्टिकल पॉवर 80% → पूरे ₹10,000, बाकी कमाई के ऊपर'
         : 'हर शिकायत समय से बंद, 80% → पूरे ₹10,000, बाकी कमाई के ऊपर') + '</div>' +
     '</div>' +
 
