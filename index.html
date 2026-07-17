@@ -92,7 +92,7 @@ html,body{background:var(--screen);}
   <div class="hdr"><span class="t">सेहत गारंटी</span></div>
   <div class="subhdr">
     <span><span id="v_month">—</span> का हिसाब</span>
-    <span>इस महीने <span id="v_days">—</span> दिन बाकी</span>
+    <span>इस साइकिल में <span id="v_days">—</span> दिन बाक़ी</span>
   </div>
   <div class="body" id="body">
     <div class="skel">आपका हिसाब लाया जा रहा है…</div>
@@ -197,20 +197,26 @@ function compute(d){
   var sla = d.stot ? d.sok / d.stot * 100 : null;   /* % समय पर समाधान · 60-day lookback   */
   var track = FORCE_TRACK;                          /* metric locked by deployment, not by d.tr */
   var val = track === 'A' ? op : sla;
+  /* Billing cycle runs 16th → 15th of the next month (16 Jul–15 Aug, 16 Aug–15 Sep …).
+     Days-left is counted real-time to the cycle's 15th, and the §5 grade window
+     (last 5 / 15 days) is relative to that cycle end, not the calendar month. */
+  var HIm = ['जनवरी','फ़रवरी','मार्च','अप्रैल','मई','जून','जुलाई','अगस्त','सितंबर','अक्टूबर','नवंबर','दिसंबर'];
   var ist = new Date(Date.now() + 330*60000);
-  var im1 = ist.getUTCMonth() + 1;
-  var dim = new Date(Date.UTC(ist.getUTCFullYear(), im1, 0)).getUTCDate();
-  var days = Math.max(0, dim - ist.getUTCDate());
-  /* §5 grade window — Track A: last 5 days of the month · Track B: last 15 days */
+  var y = ist.getUTCFullYear(), mo = ist.getUTCMonth(), dd = ist.getUTCDate();
+  var cs, ce;                                                     // cycle start / end
+  if (dd >= 16){ cs = new Date(Date.UTC(y, mo,   16)); ce = new Date(Date.UTC(y, mo+1, 15)); }
+  else         { cs = new Date(Date.UTC(y, mo-1, 16)); ce = new Date(Date.UTC(y, mo,   15)); }
+  var today0 = new Date(Date.UTC(y, mo, dd));
+  var days = Math.max(0, Math.round((ce - today0) / 86400000));   // real-time days to the 15th
   var gwin = track === 'A' ? 5 : 15;
   return {
     op:op, sla:sla, val:val, track:track, unclassified:(d.tr === 'U'),
     band: val == null ? 'idle' : (val >= TARGET ? 'green' : val >= SPLIT ? 'amber' : 'red'),
     gap:  val == null ? null   : Math.max(1, Math.ceil(TARGET - val)),
     days: days,
-    gwin: gwin,                          /* graded over the last gwin days */
+    gwin: gwin,                          /* graded over the last gwin days of the cycle */
     inWin: days <= gwin,                 /* are we inside the graded window right now? */
-    month: ['जनवरी','फ़रवरी','मार्च','अप्रैल','मई','जून','जुलाई','अगस्त','सितंबर','अक्टूबर','नवंबर','दिसंबर'][im1-1]
+    cycle: '16 ' + HIm[cs.getUTCMonth()] + ' से 15 ' + HIm[ce.getUTCMonth()] + ' तक'
   };
 }
 
@@ -235,7 +241,7 @@ function render(d, m){
               : 'आपके नेटवर्क से अभी telemetry नहीं आ रही')
     : (d.stot ? d.stot + ' शिकायत · ' + d.sok + ' समय से बंद, ' + late + ' देर से = ' + pct + '% · पिछले 60 दिन का औसत'
               : 'पिछले 60 दिन में कोई शिकायत नहीं आई — जो आए, समय से रीजाल्व कीजिए');
-  if (m.band === 'green') sub += A ? ' · महीने के आख़िर तक ऐसे ही बनाए रखें' : ' · नई शिकायत आने पर % बदल सकता है';
+  if (m.band === 'green') sub += A ? ' · साइकिल के आख़िर तक ऐसे ही बनाए रखें' : ' · नई शिकायत आने पर % बदल सकता है';
 
   var actH, actS, actRows, actF;
   if (A){
@@ -275,16 +281,16 @@ function render(d, m){
   if (m.inWin){
     waitH = '📅 यही दिन गिने जाएँगे';
     waitS = A
-      ? 'आपका ₹10,000 महीने के <b>आख़िरी 5 दिन</b> के Optical Power पर तय होगा — और वो window अभी चल रही है. इन दिनों का number ही final है, इसलिए अभी सुधार सबसे ज़्यादा मायने रखता है.'
-      : 'आपका ₹10,000 महीने के <b>आख़िरी 15 दिन</b> के समय पर समाधान पर तय होगा और वो विंडो अभी चल रही है. अभी बंद किया हर टिकट सीधे आपका % में जुड़ेगी.';
+      ? 'आपका ₹10,000 साइकिल के <b>आख़िरी 5 दिन</b> के Optical Power पर तय होगा — और वो window अभी चल रही है. इन दिनों का number ही final है, इसलिए अभी सुधार सबसे ज़्यादा मायने रखता है.'
+      : 'आपका ₹10,000 साइकिल के <b>आख़िरी 15 दिन</b> के समय पर समाधान पर तय होगा और वो विंडो अभी चल रही है. अभी बंद किया हर टिकट सीधे आपका % में जुड़ेगी.';
   } else {
     waitH = A ? 'सुधार दिखने में एक दिन लगता है' : 'ये 60 दिन का average है';
     waitS = A
-      ? 'ऊपर का नंबर पिछले 15 दिन की पिंग का एवरेज है.<br>यह रोज़ का चेक होता है.<br>पैसा महीने के <b>आख़िरी 5 दिन</b> के Optical Power पर तय होगा, इसलिए तब तक सुधार टिका रहना चाहिए.'
-      : 'ऊपर का number पिछले 60 दिन का average है — रोज़ का checkup. पैसा महीने के <b>आख़िरी 15 दिन</b> के समय पर समाधान पर तय होगा. हर ticket जो आप समय पर बंद करेंगे, उसे रोज़ ऊपर ले जाएगा.';
+      ? 'ऊपर का नंबर पिछले 15 दिन की पिंग का एवरेज है.<br>यह रोज़ का चेक होता है.<br>पैसा साइकिल के <b>आख़िरी 5 दिन</b> के Optical Power पर तय होगा, इसलिए तब तक सुधार टिका रहना चाहिए.'
+      : 'ऊपर का number पिछले 60 दिन का average है — रोज़ का checkup. पैसा साइकिल के <b>आख़िरी 15 दिन</b> के समय पर समाधान पर तय होगा. हर ticket जो आप समय पर बंद करेंगे, उसे रोज़ ऊपर ले जाएगा.';
   }
 
-  var fine = (A ? '' : '· इस महीने सिर्फ़ समय पर समाधान गिना जाएगा<br>') +
+  var fine = (A ? '' : '· इस साइकिल सिर्फ़ समय पर समाधान गिना जाएगा<br>') +
     '· ये ₹10,000 आपकी install और service की कमाई के <b>ऊपर</b> है' +
     '<br>· 80% न छू पाए तो कोई कटौती नहीं — बस ये bonus नहीं मिलेगा';
 
@@ -319,7 +325,7 @@ function render(d, m){
 
   document.getElementById('body').innerHTML =
     '<div class="card">' +
-      '<div class="k">आपकी गारंटी — इस महीने</div>' +
+      '<div class="k">आपकी गारंटी — इस साइकिल</div>' +
       '<div class="earn-amt">₹10,000</div>' +
       '<div class="earn-sub">' + (A
         ? 'आपके नेटवर्क की Optical Power 80% → पूरे ₹10,000, बाकी कमाई के ऊपर'
@@ -347,7 +353,7 @@ function render(d, m){
       '<div class="big">₹10,000 <span>पूरे — एक ही शर्त पर</span></div>' +
       '<div class="when">कब मिलेगा? — बस एक शर्त</div>' +
       '<div class="cond"><div class="cl"><span class="em">' + (A ? '🩺' : '⏱') + '</span>' +
-        'महीने के <b>आख़िरी ' + m.gwin + ' दिन</b> में आपका ' + metric + ' 80% या ऊपर</div><span class="cp">आपका वादा</span></div>' +
+        'साइकिल के <b>आख़िरी ' + m.gwin + ' दिन</b> में आपका ' + metric + ' 80% या ऊपर</div><span class="cp">आपका वादा</span></div>' +
       '<div class="cond"><div class="cl"><span class="em">🤝</span>' +
         'अगले महीने 1 तारीख को ₹10,000 आपके खाते में</div><span class="cp">व्योम का वादा</span></div>' +
       '<div class="sb">साफ़ बात</div><div class="li">' + fine + '</div>' +
@@ -359,16 +365,16 @@ function render(d, m){
 
     '<div class="edu">' +
       '<div class="eh">📚 समझ लीजिए — 2 मिनट</div>' +
-      '<div class="es">' + metric + ' ही इस महीने आपके ₹10,000 तय करता है.</div>' +
+      '<div class="es">' + metric + ' ही इस साइकिल आपके ₹10,000 तय करता है.</div>' +
       faq(qa) +
     '</div>' +
 
-    '<div class="foot">एक बार शामिल — हर महीने नया target, नया ₹10,000.<br>सवाल हो तो helpline पर call कीजिए.</div>';
+    '<div class="foot">एक बार शामिल — हर साइकिल नया target, नया ₹10,000.<br>सवाल हो तो helpline पर call कीजिए.</div>';
 }
 
 (async function(){
   var m0 = compute({});
-  document.getElementById('v_month').textContent = m0.month;
+  document.getElementById('v_month').textContent = m0.cycle;
   document.getElementById('v_days').textContent  = m0.days;
 
   var d = await getCsp();
