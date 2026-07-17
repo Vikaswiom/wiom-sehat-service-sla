@@ -109,6 +109,17 @@ var PROXY_URL = "";
 var TARGET = 80;   /* the ₹10,000 gate */
 var SPLIT  = 75;   /* the A/B track line — also the amber floor */
 
+/* ── METRIC IS LOCKED BY DEPLOYMENT (not by the CSP's track) ──────────────────
+   The service-sla site ALWAYS shows Service SLA; every other deployment (the
+   wiom-sehat-mg site) ALWAYS shows Optical Power. One shared file, self-configuring
+   by URL — send the optical link to your Track-A cohort and the service link to
+   your Track-B cohort. Override with ?track=A|B for previewing either screen.   */
+var FORCE_TRACK = (function(){
+  var q = new URLSearchParams(location.search).get('track');
+  if (q === 'A' || q === 'B') return q;
+  return /service[-_]?sla/i.test(location.pathname + location.hostname) ? 'B' : 'A';
+})();
+
 /* ── WHO IS LOOKING? ─────────────────────────────────────────────────────────
    This page cannot know which CSP tapped it. The id must arrive in the URL the
    app opens (exactly like Kamai Kavach: /?cspId=a0b6f0). A bare link with no id
@@ -184,7 +195,7 @@ async function getCsp(){
 function compute(d){
   var op  = d.all  ? d.ok  / d.all  * 100 : null;   /* % Optical Power · 15 telemetry days */
   var sla = d.stot ? d.sok / d.stot * 100 : null;   /* % समय पर समाधान · 60-day lookback   */
-  var track = d.tr === 'A' ? 'A' : 'B';             /* 'U' (no telemetry) → SLA-only, i.e. B */
+  var track = FORCE_TRACK;                          /* metric locked by deployment, not by d.tr */
   var val = track === 'A' ? op : sla;
   var ist = new Date(Date.now() + 330*60000);
   var im1 = ist.getUTCMonth() + 1;
