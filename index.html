@@ -106,6 +106,12 @@ html,body{background:var(--screen);}
    (refreshed by refresh.py). Same contract as wiom-mbg-kamai-kavach.          */
 var PROXY_URL = "";
 
+/* Single source of truth for the baked snapshot: the wiom-sehat-mg repo's data.json,
+   refreshed hourly by its GitHub Action. The Service-SLA site reads the SAME file
+   (same vikaswiom.github.io origin → same-origin fetch, no CORS, no duplicate refresh).
+   Falls back to a local data.json if that ever fails. */
+var DATA_URL = "https://vikaswiom.github.io/wiom-sehat-mg/data.json";
+
 var TARGET = 80;   /* the ₹10,000 gate */
 var SPLIT  = 75;   /* the A/B track line — also the amber floor */
 
@@ -184,12 +190,14 @@ async function getCsp(){
       if (j && (j.all !== undefined || j.stot !== undefined)) { j.id = id; return j; }
     }catch(e){}
   }
-  try{
-    var s = await fetch('data.json', {cache:'no-store'});
-    var D = (await s.json()).data || {};
-    if (!D[id]) return null;
-    var rec = D[id]; rec.id = id; return rec;
-  }catch(e){ return null; }
+  for (var u = 0; u < 2; u++){                 // primary DATA_URL, then local fallback
+    try{
+      var s = await fetch(u === 0 ? DATA_URL : 'data.json', {cache:'no-store'});
+      var D = (await s.json()).data || {};
+      return D[id] ? Object.assign(D[id], {id:id}) : null;
+    }catch(e){}
+  }
+  return null;
 }
 
 function compute(d){
