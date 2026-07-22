@@ -106,10 +106,9 @@ html,body{background:var(--screen);}
    (refreshed by refresh.py). Same contract as wiom-mbg-kamai-kavach.          */
 var PROXY_URL = "";
 
-/* Single source of truth for the baked snapshot: the wiom-sehat-mg repo's data.json,
-   refreshed hourly by its GitHub Action. The Service-SLA site reads the SAME file
-   (same vikaswiom.github.io origin → same-origin fetch, no CORS, no duplicate refresh).
-   Falls back to a local data.json if that ever fails. */
+/* Each deployment refreshes its OWN data.json hourly (its repo's GitHub Action).
+   The page reads that local data.json first; DATA_URL is a cross-repo fallback used
+   only if the local file ever fails to load. */
 var DATA_URL = "https://vikaswiom.github.io/wiom-sehat-mg/data.json";
 
 var TARGET = 80;   /* the ₹10,000 gate */
@@ -190,9 +189,9 @@ async function getCsp(){
       if (j && (j.all !== undefined || j.stot !== undefined)) { j.id = id; return j; }
     }catch(e){}
   }
-  for (var u = 0; u < 2; u++){                 // primary DATA_URL, then local fallback
+  for (var u = 0; u < 2; u++){                 // local data.json first, cross-repo fallback
     try{
-      var s = await fetch(u === 0 ? DATA_URL : 'data.json', {cache:'no-store'});
+      var s = await fetch(u === 0 ? 'data.json' : DATA_URL, {cache:'no-store'});
       var D = (await s.json()).data || {};
       return D[id] ? Object.assign(D[id], {id:id}) : null;
     }catch(e){}
