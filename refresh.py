@@ -20,7 +20,7 @@ NOTE ON THE FORMULA — this is the one thing to not get wrong:
   T2_SPEED_OK_RATE, whose direction is unambiguous. Reading it as "out of range"
   (i.e. 100 - rate) inverts every CSP and puts 986/1053 into Track A.
 """
-import json, os, sys, urllib.request
+import json, os, sys, time, urllib.request, urllib.error
 from datetime import datetime, timezone, timedelta
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -46,8 +46,20 @@ def run(sql_path):
         headers={"X-API-KEY": key, "Content-Type": "application/json"},
         method="POST",
     )
-    with urllib.request.urlopen(req, timeout=600) as r:
-        res = json.loads(r.read().decode())
+    # Retry transient Metabase/network blips (e.g. [Errno 110] Connection timed
+    # out) — a single failed connect used to kill the whole scheduled run.
+    for attempt in range(1, 5):
+        try:
+            with urllib.request.urlopen(req, timeout=600) as r:
+                res = json.loads(r.read().decode())
+            break
+        except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
+            if attempt == 4:
+                sys.exit("Metabase unreachable after 4 attempts ("
+                         + os.path.basename(sql_path) + "): " + str(e))
+            print("Metabase request failed (attempt %d/4): %s — retrying"
+                  % (attempt, e), flush=True)
+            time.sleep(15 * attempt)     # 15s, 30s, 45s backoff
     if res.get("status") == "failed":
         sys.exit("query failed (" + os.path.basename(sql_path) + "): " + str(res.get("error"))[:400])
     cols = [c["name"] for c in res["data"]["cols"]]
