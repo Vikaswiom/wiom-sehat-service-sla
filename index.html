@@ -48,6 +48,8 @@ html,body{background:var(--screen);}
 .tkt .tc{font-size:11px;font-weight:800;color:var(--purple);white-space:nowrap;flex:none;font-variant-numeric:tabular-nums;}
 .tkt .tc.warn{color:var(--red);}
 .act .fs{font-size:11px;color:#8a6a30;font-weight:600;line-height:1.5;}
+.dlbtn{display:block;width:100%;margin:2px 0;padding:13px 14px;border:none;border-radius:12px;background:var(--amber);color:#fff;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 2px 8px rgba(184,92,0,.25);-webkit-tap-highlight-color:transparent;}
+.dlbtn:active{transform:translateY(1px);box-shadow:0 1px 4px rgba(184,92,0,.25);}
 .wait{background:var(--tealbg);border:1px solid var(--tealline);border-radius:15px;padding:12px 13px;display:flex;gap:9px;}
 .wait .ic{font-size:15px;line-height:1.2;flex:none;}
 .wait .h{font-size:12.5px;font-weight:800;color:var(--teal);}
@@ -232,6 +234,20 @@ function step(i,t,s){ return '<div class="step"><span class="n">'+i+'</span><spa
 function row(t,s,c,warn){ return '<div class="tkt"><span class="tn">'+t+'<br><em>'+s+'</em></span><span class="tc'+(warn?' warn':'')+'">'+c+'</span></div>'; }
 function faq(a){ return a.map(function(f){ return '<details><summary>'+f[0]+'<span class="cv">+</span></summary>'+f[1]+'</details>'; }).join(''); }
 
+/* Sewa Sthiti / Quality drilldown — verified App Link (assetlinks.json for csp.wiom.in
+   delegates handle_all_urls to com.wiom.csp). Bridge first (inside the app WebView),
+   https fallback so a plain browser still opens/deep-links. Do NOT use www.csp.wiom.in. */
+var DEEPLINK = 'https://csp.wiom.in/assurance/quality';
+function goDeep(){
+  try{
+    if (window.CleverTap && typeof window.CleverTap.openDeepLink === 'function'){ window.CleverTap.openDeepLink(DEEPLINK); return; }
+    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.clevertap){
+      window.webkit.messageHandlers.clevertap.postMessage({action:'openDeepLink', url:DEEPLINK}); return;
+    }
+  }catch(e){}
+  try{ window.location.href = DEEPLINK; }catch(e){}
+}
+
 function render(d, m){
   var A      = m.track === 'A';
   var metric = A ? 'ऑप्टिकल पॉवर' : 'समय पर समाधान';
@@ -252,19 +268,12 @@ function render(d, m){
 
   var actH, actS, actRows, actF;
   if (A){
-    var wk = d.wk || [];
-    if (wk.length){
-      /* whom to treat — the real out-of-range ONTs, worst-first (§7) */
-      actH = '🔧 आज ये कनेक्शन ठीक करें';
-      actS = (d.wn || wk.length) + ' कनेक्शन कमज़ोर — सबसे ख़राब पहले:';
-      actRows = wk.map(function(w){
-        return row('ONT ' + w.d, (w.a ? '📍 ' + w.a : 'सिग्नल कमज़ोर — जाकर ठीक करें'), w.v + ' dBm', true);
-      }).join('');
-      actF = 'ये आपके सबसे कमज़ोर कनेक्शन हैं — इन्हें ठीक करते ही ऑप्टिकल पॉवर ऊपर जाएगा.';
-    } else {
-      actH = 'ऑप्टिकल पॉवर ऐसा ही बनाए रखें';
-      actS = ''; actRows = ''; actF = '';
-    }
+    /* Generic for every Track-A CSP: send them into सेवा स्थिति, where the app
+       shows each CSP their own weak connections (worst-first) live. */
+    actH = '🔧 आज ये कनेक्शन ठीक करें';
+    actS = 'कुछ कनेक्शन का सिग्नल कमज़ोर होता है — वही ऑप्टिकल पॉवर नीचे खींचते हैं. सेवा स्थिति में देखिए कौन-कौन से कनेक्शन ठीक करने हैं और वहीं से शुरू कीजिए.';
+    actRows = '<button class="dlbtn" type="button" onclick="goDeep()">देखें कौन से कनेक्शन ठीक करने हैं →</button>';
+    actF = 'एक-एक ठीक करते ही ऑप्टिकल पॉवर अपने आप ऊपर जाएगा.';
   } else {
     var tk = d.tk || [];
     if (tk.length){
@@ -307,7 +316,7 @@ function render(d, m){
     ['80% का मतलब क्या है?',
      '<div class="ans">हर 100 ping में कम से कम <b>80 सही</b>. अभी आपके <b>' + pct + ' सही</b> हैं' + (m.gap ? ' — यानी <b>' + m.gap + '% और</b> चाहिए' : '') + '.<br><br>ये पिछले <b>15 दिन</b> की सारी ping जोड़कर निकलता है, किसी एक दिन का नहीं.</div>'],
     ['कहाँ से शुरू करूँ?',
-     '<div class="ans">ऊपर पीले box में जो <b>ONT दिख रहे हैं — वही सबसे कमज़ोर हैं</b> (सबसे कम सिग्नल वाले पहले). उन्हीं से शुरू कीजिए.<br><br>−25 dBm से नीचे वाला हर कनेक्शन “out of range” गिना जाता है' + (m.op != null && d.wn ? ' — आपके <b>' + n(d.wn) + '</b> ऐसे हैं' : '') + '. एक-एक ठीक करेंगे तो % अपने आप चढ़ेगा. बहुत ख़राब हो तो <b>priority helpline</b> और field visit भी है.</div>']
+     '<div class="ans"><b>सेवा स्थिति</b> में आपके सारे कनेक्शन दिखते हैं — सबसे कमज़ोर सिग्नल वाले पहले. ऊपर “देखें कौन से कनेक्शन ठीक करने हैं” पर tap करके वहीं पहुँचिए और वहीं से शुरू कीजिए.<br><br>−25 dBm से नीचे वाला हर कनेक्शन “out of range” गिना जाता है' + (m.op != null && d.wn ? ' — आपके <b>' + n(d.wn) + '</b> ऐसे हैं' : '') + '. एक-एक ठीक करेंगे तो % अपने आप चढ़ेगा. बहुत ख़राब हो तो <b>priority helpline</b> और field visit भी है.</div>']
   ] : [
     ['समय पर समाधान है क्या?',
      '<div class="ans">शिकायत आने पर उसे <b>समय से</b> बंद किया = समय पर.<br><br>पिछले <b>60 दिन</b> की आपकी सारी शिकायतें गिनी जाती हैं — उनमें से कितनी समय से बंद हुईं, वही आपका %. अभी: <b>' + (d.stot || 0) + ' में से ' + (d.sok || 0) + '</b>.</div>'],
