@@ -1,0 +1,338 @@
+<!doctype html><html lang="hi"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
+<title>साइकिल का हिसाब — सेहत गारंटी</title>
+<style>
+/* Design system inherited verbatim from wiom-mbg-kamai-kavach/settle.html —
+   that file is the model and is NOT modified; this is the Sehat-MG twin. */
+:root{--maroon:#3f2a44;--purple:#6D17CE;--purpbg:#F4EBFC;--pill:#EBDDFB;--green:#008043;--green-bg:#E6F6EE;
+--amber:#B85C00;--amberbar:#E08A1E;--amber-bg:#FBF1DD;--amberline:#F0DBAF;--red:#D9202F;
+--text:#181022;--t2:#6b6478;--t3:#a8a2b4;--card:#fff;--screen:#F7F5FA;--line:#ECE7F2;--stroke2:#DED8EA;}
+*{box-sizing:border-box;margin:0;font-family:"Noto Sans Devanagari","Nirmala UI","Segoe UI",system-ui,sans-serif;}
+html,body{background:var(--screen);overflow-x:hidden;}
+.wrap{min-height:100vh;background:var(--screen);color:var(--text);max-width:430px;margin:0 auto;line-height:1.5;overflow-x:hidden;}
+.hdr{background:var(--maroon);color:#fff;padding:13px 15px;display:flex;align-items:center;gap:11px;}
+.hdr .t{font-size:15.5px;font-weight:700;flex:1;}
+.subhdr{background:var(--maroon);color:#e8dcec;padding:0 15px 11px;font-size:12px;font-weight:600;}
+.body{padding:13px;display:flex;flex-direction:column;gap:11px;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:14px;}
+.k{font-size:12px;color:var(--t2);font-weight:600;}
+.earn-amt{font-size:30px;font-weight:800;letter-spacing:-1px;margin:5px 0 3px;font-variant-numeric:tabular-nums;}
+.earn-sub{font-size:11.5px;color:var(--green);font-weight:700;line-height:1.45;}
+.earn-sub.mut{color:var(--t2);}
+.wyh-top{display:flex;align-items:baseline;gap:7px;margin:5px 0 2px;}
+.wyh-pct{font-size:31px;font-weight:800;letter-spacing:-1.5px;font-variant-numeric:tabular-nums;}
+.wyh-need80{font-size:12.5px;color:var(--t3);font-weight:700;}
+.bar{position:relative;height:11px;background:#EDEAF2;border-radius:6px;margin:12px 0 4px;}
+.bar .fill{position:absolute;left:0;top:0;bottom:0;border-radius:6px;}
+.bar .mk{position:absolute;left:80%;top:-4px;bottom:-4px;width:2px;background:#2a2130;}
+.wyh-need{font-size:14px;font-weight:800;margin-top:9px;}
+.wyh-line{font-size:11.5px;color:var(--t2);line-height:1.5;margin-top:3px;}
+.f-green .wyh-pct{color:var(--green)}.f-green .fill{background:var(--green)}.f-green .wyh-need{color:var(--green)}
+.f-amber .wyh-pct{color:var(--amber)}.f-amber .fill{background:var(--amberbar)}.f-amber .wyh-need{color:var(--amber)}
+.f-red .wyh-pct{color:var(--red)}.f-red .fill{background:var(--red)}.f-red .wyh-need{color:var(--red)}
+
+/* settlement card — themed by outcome (ok = paid · applied = guarantee held · na = no bonus) */
+.settle{border-radius:16px;padding:15px;border:1px solid;}
+.settle .ph{font-size:12.5px;font-weight:800;}
+.settle .title{font-size:16.5px;font-weight:800;letter-spacing:-.3px;margin:4px 0 6px;line-height:1.3;}
+.settle .bd{font-size:12.5px;line-height:1.6;font-weight:500;}
+.settle .rows{margin-top:12px;background:#fff;border-radius:11px;padding:4px 12px;}
+.settle .row{display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:9px 0;font-size:12.5px;border-top:1px solid var(--line);}
+.settle .row:first-child{border-top:0;}
+.settle .row .lab{color:var(--t2);font-weight:600;}
+.settle .row .amt{font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums;}
+.settle .row.plus .amt{color:var(--purple);}
+.settle .row.total{border-top:1.5px solid var(--stroke2);}
+.settle .row.total .lab{color:var(--text);font-weight:800;}
+.settle .row.total .amt{font-size:18px;font-weight:800;letter-spacing:-.5px;}
+.settle.ok{background:var(--green-bg);border-color:#BFE6D2;}
+.settle.ok .ph,.settle.ok .title{color:var(--green);} .settle.ok .row.total .amt{color:var(--green);}
+.settle.applied{background:var(--purpbg);border-color:#e6d6fa;}
+.settle.applied .ph,.settle.applied .title{color:var(--purple);} .settle.applied .row.total .amt{color:var(--purple);}
+.settle.na{background:var(--amber-bg);border-color:var(--amberline);}
+.settle.na .ph,.settle.na .title{color:var(--amber);} .settle.na .row.total .amt{color:var(--amber);}
+.settle .bd b{color:var(--text);}
+.settle .sb{font-size:11.5px;font-weight:800;margin:11px 0 4px;}
+.settle .li{font-size:11.5px;line-height:1.7;color:var(--t2);}
+/* नई-साइकिल card */
+.settle.days{background:#F1EEF6;border-color:var(--stroke2);}
+.settle.days .ph,.settle.days .title{color:var(--maroon);} .settle.days .row.total .amt{color:var(--maroon);}
+.days-next{font-size:11.5px;color:var(--purple);font-weight:700;line-height:1.5;margin-top:11px;}
+.dlbtn{display:block;width:100%;margin:11px 0 0;padding:13px 14px;border:none;border-radius:12px;background:var(--purple);
+  color:#fff;text-align:center;text-decoration:none;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;
+  box-shadow:0 2px 8px rgba(109,23,206,.22);-webkit-tap-highlight-color:transparent;}
+.dlbtn:active{transform:translateY(1px);}
+
+.foot{font-size:11px;color:var(--t3);text-align:center;padding:2px 6px 16px;line-height:1.5;}
+
+/* demo switcher (only with ?demo=1 or no cspId) */
+.demo{max-width:430px;margin:0 auto;padding:10px 13px 0;display:flex;flex-wrap:wrap;gap:6px;}
+.demo button{font-size:11px;font-weight:700;padding:6px 10px;border-radius:999px;cursor:pointer;
+  background:#fff;color:var(--t2);border:1px solid var(--stroke2);}
+.demo button[aria-pressed="true"]{background:var(--maroon);border-color:var(--maroon);color:#fff;}
+.demo .note{width:100%;font-size:11px;color:var(--t3);padding-top:2px;}
+.skel{color:var(--t3);font-size:12.5px;font-weight:600;text-align:center;padding:34px 14px;line-height:1.7;}
+</style></head>
+<body>
+<div class="demo" id="demo" hidden></div>
+<div class="wrap"><div class="hdr"><span class="t">सेहत गारंटी</span></div>
+  <div class="subhdr" id="subhdr">साइकिल का हिसाब</div>
+  <div class="body" id="body"><div class="skel">हिसाब लाया जा रहा है…</div></div>
+</div>
+
+<script>
+/* ── Sehat MG cycle-end settlement (report card) ─────────────────────────────
+   The twin of wiom-mbg-kamai-kavach/settle.html for the Sehat (Quality) MG.
+   Reads the SAME raw inputs the daily tile reads ({ok,all,sok,stot,cn,tr,op0}
+   from data.json), grades the CSP on THEIR OWN track (tr — not the deployment),
+   and renders the cycle verdict: 80% पार → ₹10,000 (paid Day-1, the 16th, same
+   run as Install MG) · below → ₹0, no deduction, install/service pay untouched.
+   Cases: pass · near-miss (75–79) · miss (<75) · no-complaints (Track B, zero
+   tickets in window → nothing to grade, guarantee held — the Kamai Kavach
+   "noleads" precedent) · no-telemetry (cannot grade → helpline).
+   NOTE: grades on the same rolling windows the daily tile shows (15-day OP /
+   60-day SLA) — the spec's month-end aggregates (last 5/15 days) need their own
+   fields in data.json; swap them in here when Growth bakes them.               */
+var PROXY_URL = "";
+var DATA_URL  = "https://vikaswiom.github.io/wiom-sehat-mg/data.json";  /* cross-repo fallback */
+var TARGET = 80, SPLIT = 75, PRIZE = 10000;
+var DAILY = {A:'https://vikaswiom.github.io/wiom-sehat-mg/',
+             B:'https://vikaswiom.github.io/wiom-sehat-service-sla/'};
+
+/* same multi-shape id reader as the daily page — query / hash / path / webview / session */
+var ID_RE = /^[a-z][a-z0-9]{4,9}$/;
+function cspIdFromUrl(){
+  var q = new URLSearchParams(location.search);
+  var id = q.get('cspId') || q.get('cspid') || q.get('csp_id') || q.get('id') || '';
+  if (!id && location.hash){
+    var h = location.hash.slice(1);
+    id = h.indexOf('=') > -1 ? (new URLSearchParams(h).get('cspId') || '') : h;
+  }
+  if (!id){
+    try{
+      id = window.CSP_ID || window.cspId || '';
+      if (!id && window.Android && typeof window.Android.getCspId === 'function') id = window.Android.getCspId();
+    }catch(e){}
+  }
+  id = String(id || '').trim().toLowerCase();
+  try{
+    if (id) sessionStorage.setItem('sehat_csp', id);
+    else    id = (sessionStorage.getItem('sehat_csp') || '').toLowerCase();
+  }catch(e){}
+  return ID_RE.test(id) ? id : '';
+}
+function inr(n){ return Number(n).toLocaleString('en-IN'); }
+
+/* Billing cycle runs 16th → 15th. This screen settles the cycle that has ENDED:
+   opened on/after the 16th it reports 16(prev) – 15(this), payday = the 16th. */
+var HIm = ['जनवरी','फ़रवरी','मार्च','अप्रैल','मई','जून','जुलाई','अगस्त','सितंबर','अक्टूबर','नवंबर','दिसंबर'];
+function fmtD(t){ var d = new Date(t); return d.getUTCDate() + ' ' + HIm[d.getUTCMonth()]; }
+function cycle(){
+  var ist = new Date(Date.now() + 330*60000);
+  var y = ist.getUTCFullYear(), mo = ist.getUTCMonth(), dd = ist.getUTCDate();
+  var k = dd >= 16 ? 0 : 1;                                   /* how many months back the settled cycle sits */
+  return {
+    cs:  Date.UTC(y, mo-1-k, 16), ce: Date.UTC(y, mo-k, 15),  /* settled cycle */
+    pay: Date.UTC(y, mo-k, 16),                               /* Day-1 payout run */
+    ns:  Date.UTC(y, mo-k, 16),   ne: Date.UTC(y, mo+1-k, 15),/* the cycle now running */
+    payToday: Date.UTC(y, mo, dd) === Date.UTC(y, mo-k, 16)
+  };
+}
+
+/* display %: never show a rounded "75/80" that contradicts the raw-value verdict */
+function fmtPct(v){
+  if (v == null) return '—';
+  var r = Math.round(v);
+  return ((r === TARGET || r === SPLIT) && v < r) ? v.toFixed(1) : String(r);
+}
+
+function compute(d){
+  var op  = d.all  ? d.ok  / d.all  * 100 : null;
+  var sla = d.stot ? d.sok / d.stot * 100 : null;
+  var tr  = d.tr;
+  if (tr !== 'A' && tr !== 'B' && tr !== 'U')
+    tr = d.op0 != null ? (d.op0 < SPLIT ? 'A' : 'B') : (op != null ? (op < SPLIT ? 'A' : 'B') : 'U');
+  var val = tr === 'A' ? op : sla;
+  var kase = tr === 'A'
+    ? (val == null ? 'nodata' : val >= TARGET ? 'pass' : val >= SPLIT ? 'near' : 'miss')
+    : (val == null ? 'none'   : val >= TARGET ? 'pass' : val >= SPLIT ? 'near' : 'miss');
+  return {
+    tr: tr, op: op, sla: sla, val: val, kase: kase,
+    won: kase === 'pass' || kase === 'none',
+    gap: val == null ? null : Math.max(1, Math.ceil(TARGET - val)),
+    band: val == null ? 'green' : val >= TARGET ? 'green' : val >= SPLIT ? 'amber' : 'red',
+    cyc: cycle()
+  };
+}
+
+function rowsHTML(rows){
+  return '<div class="rows">'+rows.map(function(r){
+    return '<div class="row'+(r[2]||'')+'"><span class="lab">'+r[0]+'</span><span class="amt">'+r[1]+'</span></div>';
+  }).join('')+'</div>';
+}
+
+function render(d){
+  var m = compute(d), c = m.cyc;
+  var A = m.tr === 'A';
+  var metric = A ? 'ऑप्टिकल पॉवर' : 'समय पर समाधान';
+  var pct = fmtPct(m.val);
+  var late = (d.stot || 0) - (d.sok || 0);
+  var payLine = c.payToday ? 'आज Install MG के साथ ही आपके खाते में' : fmtD(c.pay) + ' को Install MG के साथ आपके खाते में';
+
+  document.getElementById('subhdr').textContent = fmtD(c.cs) + ' – ' + fmtD(c.ce) + ' की साइकिल का हिसाब';
+
+  if (m.kase === 'nodata'){
+    document.getElementById('body').innerHTML =
+      '<div class="skel">इस साइकिल आपके नेटवर्क से telemetry नहीं मिली,<br>इसलिए हिसाब अभी तैयार नहीं है.<br>Helpline पर call कीजिए.</div>';
+    return;
+  }
+
+  /* hero — what landed in the wallet */
+  var heroHTML = m.won
+    ? '<div class="card"><div class="k">इस साइकिल की सेहत गारंटी</div>'+
+        '<div class="earn-amt">₹'+inr(PRIZE)+'</div>'+
+        '<div class="earn-sub">'+payLine+' · install-service कमाई के ऊपर</div></div>'
+    : '<div class="card"><div class="k">इस साइकिल का सेहत bonus</div>'+
+        '<div class="earn-amt">₹0</div>'+
+        '<div class="earn-sub mut">कोई कटौती नहीं — install और service की कमाई पूरी आपकी</div></div>';
+
+  /* standing — where the cycle closed */
+  var basis = A
+    ? (d.all ? inr(d.all)+' ping में से '+inr(d.ok)+' सही = '+pct+'% · आख़िरी 15 दिन का औसत' : '')
+    : (d.stot ? d.stot+' शिकायत · '+d.sok+' समय से बंद, '+late+' देर से = '+pct+'%'
+              : 'पूरी साइकिल में एक भी service शिकायत नहीं आई');
+  var need = m.val == null       ? 'गिनने को शिकायत ही नहीं थी'
+           : m.kase === 'pass'   ? '✓ 80% पार — वादा पूरा'
+           : m.kase === 'near'   ? 'बस '+m.gap+'% रह गया'
+           :                       '80% से '+m.gap+'% दूर रह गया';
+  var standHTML = m.val == null
+    ? '<div class="card f-green"><div class="k">आप कहाँ बंद हुए</div>'+
+        '<div class="wyh-need" style="margin-top:6px">'+need+'</div>'+
+        '<div class="wyh-line">'+basis+'</div></div>'
+    : '<div class="card f-'+m.band+'"><div class="k">आप कहाँ बंद हुए</div>'+
+        '<div class="wyh-top"><span class="wyh-pct">'+pct+'%</span>'+
+          '<span class="wyh-need80">/ 80% या ऊपर चाहिए · '+metric+'</span></div>'+
+        '<div class="bar"><div class="fill" style="width:'+Math.min(100, m.val)+'%"></div><div class="mk"></div></div>'+
+        '<div class="wyh-need">'+need+'</div>'+
+        '<div class="wyh-line">'+basis+'</div></div>';
+
+  /* settlement — the verdict card */
+  var s;
+  if (m.kase === 'pass'){
+    s = {tone:'ok', ph:'🛡 साइकिल का हिसाब', title:'बधाई हो — ₹'+inr(PRIZE)+' पक्का 🎉',
+      body:'आपने अपने नेटवर्क का '+metric+' <b>80% पार</b> रखा — वही एक शर्त थी. ₹'+inr(PRIZE)+' '+payLine+'.',
+      rows:[[metric, pct+'%'], ['शर्त — 80% या ऊपर','✓ पूरा'],
+            ['सेहत गारंटी — वॉलेट में','₹'+inr(PRIZE),' total']]};
+  } else if (m.kase === 'none'){
+    s = {tone:'applied', ph:'🛡 साइकिल का हिसाब', title:'एक भी शिकायत नहीं — गारंटी बनी रही',
+      body:'इस साइकिल आपके नेटवर्क से <b>कोई service शिकायत आई ही नहीं</b> — गिनने को कुछ था ही नहीं, और साफ़ सेवा पर गारंटी टूटती नहीं. ₹'+inr(PRIZE)+' '+payLine+'.',
+      rows:[['शिकायतें इस साइकिल','0'],
+            ['सेहत गारंटी — वॉलेट में','₹'+inr(PRIZE),' total']]};
+  } else if (m.kase === 'near'){
+    s = {tone:'na', ph:'🛡 साइकिल का हिसाब', title:'बस '+m.gap+'% रह गया',
+      body:'आपका '+metric+' <b>'+pct+'%</b> पर बंद हुआ — 80% से ज़रा-सा नीचे. कोई कटौती नहीं: install और service की कमाई पूरी आपकी. नई साइकिल आज से — यही मेहनत अगली बार ₹'+inr(PRIZE)+' बना देगी.',
+      rows:[[metric, pct+'%'], ['चाहिए था','80% या ऊपर'],
+            ['सेहत bonus — इस साइकिल','₹0',' total']]};
+  } else {
+    s = {tone:'na', ph:'🛡 साइकिल का हिसाब', title:'इस साइकिल 80% नहीं हो पाया',
+      body:'आपका '+metric+' <b>'+pct+'%</b> पर बंद हुआ. साफ़ बात: इस साइकिल सेहत bonus नहीं बना — पर <b>कोई कटौती भी नहीं</b>, install और service की कमाई पूरी आपकी. नई साइकिल आज से शुरू है, गिनती फिर 0 से.',
+      rows:[[metric, pct+'%'], ['चाहिए था','80% या ऊपर'],
+            ['सेहत bonus — इस साइकिल','₹0',' total']]};
+  }
+  var fineHTML = '<div class="sb">साफ़ बात</div><div class="li">'+
+    '· ये ₹'+inr(PRIZE)+' आपकी install और service की कमाई के <b>ऊपर</b> है<br>'+
+    '· 80% न होने पर कोई कटौती नहीं — बस bonus नहीं बनता<br>'+
+    '· हर साइकिल नई गिनती, नया मौका</div>';
+  var settleHTML = '<div class="settle '+s.tone+'"><div class="ph">'+s.ph+'</div>'+
+    '<div class="title">'+s.title+'</div><div class="bd">'+s.body+'</div>'+
+    rowsHTML(s.rows)+fineHTML+'</div>';
+
+  /* next cycle — already running */
+  var dailyUrl = DAILY[A ? 'A' : 'B'] + (d.id ? '?cspId=' + encodeURIComponent(d.id) : '');
+  var nextHTML = '<div class="settle days"><div class="ph">🗓️ नई साइकिल शुरू हो चुकी है</div>'+
+    rowsHTML([['साइकिल', fmtD(c.ns)+' – '+fmtD(c.ne)],
+              ['वही एक शर्त','80% या ऊपर'],
+              ['गारंटी','₹'+inr(PRIZE),' total']])+
+    '<div class="days-next">आज का ऑप्टिकल पॉवर आपका नया track तय करेगा — रोज़ का checkup app में देखते रहिए.</div>'+
+    '<a class="dlbtn" href="'+dailyUrl+'">अपनी आज की सेहत देखें →</a></div>';
+
+  document.getElementById('body').innerHTML =
+    heroHTML + standHTML + settleHTML + nextHTML +
+    '<div class="foot">एक बार शामिल — हर साइकिल नया target, नया ₹'+inr(PRIZE)+'.<br>सवाल हो तो helpline पर call कीजिए.</div>';
+
+  try{
+    var ev = 'Sehat_Settle_' + m.tr + '_' + m.kase;
+    if (window.CleverTap && window.CleverTap.pushEvent) window.CleverTap.pushEvent(ev);
+    if (window.console) console.log('[SehatSettle]', ev, 'csp=' + (d.id || 'demo'));
+  }catch(e){}
+}
+
+/* ── data — local data.json first, cross-repo fallback (same contract as the daily tile) ── */
+async function getCsp(){
+  var id = cspIdFromUrl();
+  if (!id) return null;
+  if (PROXY_URL){
+    try{
+      var sep = PROXY_URL.indexOf('?') > -1 ? '&' : '?';
+      var r = await fetch(PROXY_URL + sep + 'cspId=' + encodeURIComponent(id), {cache:'no-store'});
+      var j = await r.json();
+      if (j && (j.all !== undefined || j.stot !== undefined)) { j.id = id; return j; }
+    }catch(e){}
+  }
+  for (var u = 0; u < 2; u++){
+    try{
+      var s = await fetch(u === 0 ? 'data.json' : DATA_URL, {cache:'no-store'});
+      var D = (await s.json()).data || {};
+      return D[id] ? Object.assign(D[id], {id:id}) : null;
+    }catch(e){}
+  }
+  return null;
+}
+
+/* ── demo (preview every case) — shows with ?demo=1 or no cspId ── */
+var DEMO = {
+  apass:{label:'A1 · ऑप्टिकल 87% — ₹10,000', tr:'A', ok:3567, all:4100},
+  anear:{label:'A2 · ऑप्टिकल 77% — बस 3% रह गया', tr:'A', ok:3157, all:4100},
+  amiss:{label:'A3 · ऑप्टिकल 46% — bonus नहीं', tr:'A', ok:1882, all:4086},
+  bpass:{label:'B1 · समाधान 90% — ₹10,000', tr:'B', sok:186, stot:206},
+  bnear:{label:'B2 · समाधान 79% — बस 2% रह गया', tr:'B', sok:22, stot:28},
+  bmiss:{label:'B3 · समाधान 71% — bonus नहीं', tr:'B', sok:15, stot:21},
+  bnone:{label:'B4 · 0 शिकायत — गारंटी बनी रही', tr:'B', sok:0, stot:0},
+  upass:{label:'U · बिना telemetry — समाधान 85%', tr:'U', sok:17, stot:20}
+};
+function mountDemo(){
+  var el = document.getElementById('demo'); el.hidden = false;
+  Object.keys(DEMO).forEach(function(k){
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = DEMO[k].label;
+    b.onclick = function(){
+      Array.prototype.forEach.call(el.querySelectorAll('button'), function(x){ x.setAttribute('aria-pressed','false'); });
+      b.setAttribute('aria-pressed','true'); render(DEMO[k]);
+    };
+    el.appendChild(b);
+  });
+  var n = document.createElement('div'); n.className = 'note';
+  n.textContent = 'हर साइकिल इनमें से एक पर बंद होती है';
+  el.appendChild(n);
+  el.querySelector('button').click();
+}
+
+(async function(){
+  var q = new URLSearchParams(location.search);
+  if (q.get('case') && DEMO[q.get('case')]){ render(DEMO[q.get('case')]); return; }
+  var id = cspIdFromUrl();
+  if (!id || q.get('demo') === '1'){ mountDemo(); return; }
+  var d = await getCsp();
+  if (!d){
+    document.getElementById('body').innerHTML =
+      '<div class="skel">'+(id
+        ? 'इस साइकिल का हिसाब अभी तैयार नहीं है.<br>App में दोबारा खोलें, या helpline पर call करें.'
+        : 'ये पेज आपकी CSP ID के साथ खुलता है.<br>App में “सेहत गारंटी” पर tap कीजिए.')+'</div>';
+    return;
+  }
+  render(d);
+})();
+</script>
+</body></html>

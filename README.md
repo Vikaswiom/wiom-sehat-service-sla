@@ -5,6 +5,7 @@ Point the Service cohort's CleverTap campaign at this URL; point the Optical coh
 [wiom-sehat-mg](https://vikaswiom.github.io/wiom-sehat-mg/).
 
 **Live:** https://vikaswiom.github.io/wiom-sehat-service-sla/?cspId=a0b7g3  *(a Track-B example, SLA 16%)*
+**Settlement (cycle-end report card):** https://vikaswiom.github.io/wiom-sehat-service-sla/settle.html?cspId=a0b7g3 · all cases: `settle.html?demo=1` — see the [sibling README](https://github.com/Vikaswiom/wiom-sehat-mg#settlehtml--the-cycle-end-report-card) for the case table.
 
 ## Why a second link
 

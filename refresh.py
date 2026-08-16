@@ -139,6 +139,6 @@ print(f"open tkts  {tkt_csps} Track-B CSPs got an open-ticket list")
 import shutil
 SIB = os.path.join(os.path.dirname(HERE), "wiom-sehat-service-sla")
 if os.path.isdir(SIB) and os.path.abspath(SIB) != os.path.abspath(HERE):   # not self
-    for f in ("index.html", "404.html", "data.json"):
+    for f in ("index.html", "404.html", "settle.html", "data.json"):
         shutil.copyfile(os.path.join(HERE, f), os.path.join(SIB, f))
-    print(f"synced     index.html + data.json -> {SIB}  (commit & push that repo too)")
+    print(f"synced     index.html + settle.html + data.json -> {SIB}  (commit & push that repo too)")
