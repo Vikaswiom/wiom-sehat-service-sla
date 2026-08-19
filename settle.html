@@ -33,7 +33,7 @@ html,body{background:var(--screen);overflow-x:hidden;}
 .f-amber .wyh-pct{color:var(--amber)}.f-amber .fill{background:var(--amberbar)}.f-amber .wyh-need{color:var(--amber)}
 .f-red .wyh-pct{color:var(--red)}.f-red .fill{background:var(--red)}.f-red .wyh-need{color:var(--red)}
 
-/* settlement card — themed by outcome (ok = paid · applied = guarantee held · na = no bonus) */
+/* settlement card — themed by outcome (ok = paid · applied = info/held · na = no bonus) */
 .settle{border-radius:16px;padding:15px;border:1px solid;}
 .settle .ph{font-size:12.5px;font-weight:800;}
 .settle .title{font-size:16.5px;font-weight:800;letter-spacing:-.3px;margin:4px 0 6px;line-height:1.3;}
@@ -86,21 +86,112 @@ html,body{background:var(--screen);overflow-x:hidden;}
 <script>
 /* ── Sehat MG cycle-end settlement (report card) ─────────────────────────────
    The twin of wiom-mbg-kamai-kavach/settle.html for the Sehat (Quality) MG.
-   Reads the SAME raw inputs the daily tile reads ({ok,all,sok,stot,cn,tr,op0}
-   from data.json), grades the CSP on THEIR OWN track (tr — not the deployment),
-   and renders the cycle verdict: 80% पार → ₹10,000 (paid Day-1, the 16th, same
-   run as Install MG) · below → ₹0, no deduction, install/service pay untouched.
-   Cases: pass · near-miss (75–79) · miss (<75) · no-complaints (Track B, zero
-   tickets in window → nothing to grade, guarantee held — the Kamai Kavach
-   "noleads" precedent) · no-telemetry (cannot grade → helpline).
-   NOTE: grades on the same rolling windows the daily tile shows (15-day OP /
-   60-day SLA) — the spec's month-end aggregates (last 5/15 days) need their own
-   fields in data.json; swap them in here when Growth bakes them.               */
+   For a SETTLED cycle the OFFICIAL payout table (CYCLE1 below) is the single
+   source of truth — never the rolling estimate:
+     · gate  — Track A: 15-Aug cycle-close Optical reading ≥ 80.
+               Track B: SLA on complaints OPENED IN THE CYCLE (`ic`) ≥ 80 — the
+               60-day rolling number can sit below 80 while the CSP still wins
+               (3 of the 16 winners did exactly that).
+     · payout — pro-rata by opt-in date: days enrolled ÷ 31 × ₹10,000.
+     · not in the table = not enrolled this cycle → info card, no ₹ promised.
+   Comms groups from the run flavor the ₹0 copy: g3 "at the door" (rolling
+   within 5 of 80) · g4 improved-not-paid (praise the climb) · g5 held/declined.
+   For a cycle with no table yet (next cycle until its run lands), the screen
+   falls back to the rolling estimate and says the final list confirms payout. */
 var PROXY_URL = "";
 var DATA_URL  = "https://vikaswiom.github.io/wiom-sehat-mg/data.json";  /* cross-repo fallback */
 var TARGET = 80, SPLIT = 75, PRIZE = 10000;
 var DAILY = {A:'https://vikaswiom.github.io/wiom-sehat-mg/',
              B:'https://vikaswiom.github.io/wiom-sehat-service-sla/'};
+
+/* ── OFFICIAL SETTLEMENT — 16 Jul–15 Aug 2026, paid 16 Aug with the Install-MG run.
+   78 enrolled CSPs · 16 paid (₹1,57,095). Per row: c category as enrolled ·
+   g comms group (1 paid · 3 at the door · 4 improved-not-paid · 5 held/declined) ·
+   e 16-Jul % · r 15-Aug % (rolling) · ic in-cycle Service SLA % (Track B gate) ·
+   amt payout ₹ + j/d opt-in date & days (pro-rata) — only on paid rows.
+   Replace with the next run's table each cycle (or a settle-data.json later).  */
+var CYCLE1 = {
+  ce: Date.UTC(2026, 7, 15),   /* the cycle-end this table settles */
+  data: {
+  a0b8z2:{c:'A',g:1,e:80.1,r:97.7,amt:9677,j:'17 जुलाई',d:30},
+  a0b5w2:{c:'B',g:1,e:70.6,r:95.3,ic:100,amt:10000,j:'16 जुलाई',d:31},
+  a0b7d8:{c:'A',g:1,e:77.9,r:94.3,amt:9032,j:'19 जुलाई',d:28},
+  a0b6e9:{c:'B',g:1,e:70.7,r:92.9,ic:98.6,amt:10000,j:'16 जुलाई',d:31},
+  a0b7g9:{c:'B',g:1,e:61.1,r:87.5,ic:80,amt:9677,j:'17 जुलाई',d:30},
+  a0b6j9:{c:'B',g:1,e:79.3,r:87.2,ic:91,amt:10000,j:'16 जुलाई',d:31},
+  a0c0b8:{c:'B',g:1,e:84.8,r:86.7,ic:92.4,amt:10000,j:'16 जुलाई',d:31},
+  a0b9m3:{c:'B',g:1,e:89.6,r:85.6,ic:81.2,amt:9355,j:'18 जुलाई',d:29},
+  a0a7g1:{c:'B',g:1,e:76.9,r:85.1,ic:80,amt:10000,j:'16 जुलाई',d:31},
+  a0b8z4:{c:'A',g:1,e:65.9,r:83.1,amt:9677,j:'17 जुलाई',d:30},
+  a0b8z3:{c:'A',g:1,e:66.4,r:81.9,amt:9677,j:'17 जुलाई',d:30},
+  a0b9v7:{c:'A',g:1,e:77.9,r:80.7,amt:10000,j:'16 जुलाई',d:31},
+  a0b7e1:{c:'A',g:1,e:74.7,r:80.6,amt:10000,j:'16 जुलाई',d:31},
+  a0b6o9:{c:'B',g:1,e:84.1,r:79.5,ic:92.3,amt:10000,j:'16 जुलाई',d:31},
+  a0b9h3:{c:'B',g:1,e:62.3,r:73.2,ic:90.8,amt:10000,j:'16 जुलाई',d:31},
+  a0b7b3:{c:'B',g:1,e:46.2,r:41.5,ic:84.6,amt:10000,j:'16 जुलाई',d:31},
+  a0b9z8:{c:'B',g:3,e:80,r:79.5,ic:70.7},
+  a0c0f1:{c:'A',g:3,e:76.9,r:79.2},
+  a0b9g6:{c:'A',g:3,e:78.3,r:78.4},
+  a0c0a4:{c:'A',g:3,e:66.8,r:77.7},
+  a0b6p4:{c:'A',g:3,e:72.4,r:77.2},
+  a0c0h2:{c:'A',g:3,e:71.1,r:76.2},
+  a0b5x8:{c:'A',g:3,e:72.1,r:76.1},
+  a0b9t8:{c:'A',g:3,e:70.3,r:75.8},
+  a0b8s5:{c:'A',g:3,e:76,r:75.8},
+  a0b6g7:{c:'A',g:3,e:77.1,r:75.6},
+  a0b7h7:{c:'A',g:3,e:76.3,r:75.3},
+  a0b5s6:{c:'B',g:3,e:80,r:75,ic:55.6},
+  a0a7d8:{c:'A',g:4,e:71.2,r:74.3},
+  a0b6c0:{c:'A',g:4,e:66.6,r:73.5},
+  a0a7e9:{c:'A',g:4,e:71.8,r:73.3},
+  a0b8t5:{c:'B',g:4,e:54,r:72.7,ic:78.9},
+  a0b5o8:{c:'A',g:4,e:65.5,r:71.4},
+  a0b9k4:{c:'A',g:4,e:68.5,r:70.6},
+  a0b5o2:{c:'A',g:4,e:67.6,r:69.9},
+  a0b6p2:{c:'A',g:4,e:64.3,r:69.3},
+  a0b9i4:{c:'B',g:4,e:63.6,r:66.7,ic:50},
+  a0b6v4:{c:'A',g:4,e:60,r:65.9},
+  a0a7b0:{c:'B',g:4,e:60.6,r:63.9,ic:65.3},
+  a0b6e4:{c:'B',g:4,e:51.6,r:63.6,ic:61.5},
+  a0b5s0:{c:'A',g:4,e:57.1,r:62.6},
+  a0c0g3:{c:'A',g:4,e:54.5,r:62.3},
+  a0b7a6:{c:'A',g:4,e:31.1,r:61.3},
+  a0b5w3:{c:'A',g:4,e:54.9,r:59.2},
+  a0b6t4:{c:'A',g:4,e:44.9,r:57.6},
+  a0b9v6:{c:'A',g:4,e:52.2,r:54},
+  a0b8p0:{c:'A',g:4,e:40.2,r:52.6},
+  a0b6v6:{c:'A',g:5,e:74.4,r:74.6},
+  a0b9p9:{c:'A',g:5,e:73.2,r:74},
+  a0b6r5:{c:'A',g:5,e:73.2,r:73.6},
+  a0b9y1:{c:'A',g:5,e:77.2,r:73.2},
+  a0a6y5:{c:'B',g:5,e:71.7,r:71.6,ic:75},
+  a0b1u5:{c:'A',g:5,e:78.6,r:71.4},
+  a0a7g8:{c:'A',g:5,e:70.7,r:70.5},
+  a0b8q4:{c:'A',g:5,e:74.8,r:68.6},
+  a0b6r2:{c:'B',g:5,e:69.8,r:67.6,ic:76.2},
+  a0c0h1:{c:'B',g:5,e:70,r:66.7,ic:50},
+  a0b6b3:{c:'A',g:5,e:65.7,r:66.4},
+  a0b7d7:{c:'A',g:5,e:66.5,r:66.4},
+  a0b7j3:{c:'B',g:5,e:72.1,r:66.2,ic:61.3},
+  a0a7e7:{c:'A',g:5,e:66,r:65.9},
+  a0a7e5:{c:'A',g:5,e:69.6,r:65.8},
+  a0b9z3:{c:'A',g:5,e:70.4,r:65.3},
+  a0b9i3:{c:'A',g:5,e:64.2,r:63.7},
+  a0b9x0:{c:'A',g:5,e:66.8,r:61.4},
+  a0b8s8:{c:'A',g:5,e:72.2,r:60.4},
+  a0b6c1:{c:'A',g:5,e:61.9,r:58},
+  a0b5z3:{c:'B',g:5,e:57.6,r:53.9,ic:41.3},
+  a0b7e2:{c:'B',g:5,e:55.8,r:53.7,ic:56},
+  a0b5v6:{c:'B',g:5,e:60.3,r:52.3,ic:52.9},
+  a0b6c9:{c:'A',g:5,e:52,r:51.8},
+  a0b6b4:{c:'A',g:5,e:54,r:51},
+  a0c0b0:{c:'B',g:5,e:66.7,r:49.9,ic:50.2},
+  a0b7f4:{c:'B',g:5,e:33.3,r:33.3,ic:37.5},
+  a0b7i3:{c:'B',g:5,e:54.5,r:32.9,ic:25.2},
+  a0c0c1:{c:'B',g:5,e:22.9,r:17.3,ic:15.2},
+  a0c0j2:{c:'B',g:5,e:30,r:12.5,ic:50},
+  a0c0f4:{c:'B',g:5,e:66.7,r:0,ic:0}
+}};
 
 /* same multi-shape id reader as the daily page — query / hash / path / webview / session */
 var ID_RE = /^[a-z][a-z0-9]{4,9}$/;
@@ -142,7 +233,8 @@ function cycle(){
   };
 }
 
-/* display %: never show a rounded "75/80" that contradicts the raw-value verdict */
+/* display %: official readings keep their decimal; estimates never round across the gate */
+function fmtOff(v){ return v % 1 ? v.toFixed(1) : String(v); }
 function fmtPct(v){
   if (v == null) return '—';
   var r = Math.round(v);
@@ -150,21 +242,38 @@ function fmtPct(v){
 }
 
 function compute(d){
+  var c   = cycle();
   var op  = d.all  ? d.ok  / d.all  * 100 : null;
   var sla = d.stot ? d.sok / d.stot * 100 : null;
-  var tr  = d.tr;
-  if (tr !== 'A' && tr !== 'B' && tr !== 'U')
-    tr = d.op0 != null ? (d.op0 < SPLIT ? 'A' : 'B') : (op != null ? (op < SPLIT ? 'A' : 'B') : 'U');
-  var val = tr === 'A' ? op : sla;
-  var kase = tr === 'A'
-    ? (val == null ? 'nodata' : val >= TARGET ? 'pass' : val >= SPLIT ? 'near' : 'miss')
-    : (val == null ? 'none'   : val >= TARGET ? 'pass' : val >= SPLIT ? 'near' : 'miss');
+  /* the official table decides the settled cycle it covers */
+  var rec = d.rec || ((d.id && c.ce === CYCLE1.ce) ? CYCLE1.data[d.id] : null) || null;
+  var tr, val, kase, official = false;
+  if (rec){
+    official = true;
+    tr   = rec.c;
+    val  = tr === 'B' && rec.ic != null ? rec.ic : rec.r;    /* the number the gate used */
+    kase = rec.amt > 0 ? 'paid' : rec.g === 3 ? 'door' : rec.g === 4 ? 'improved' : 'held';
+  } else if (d.rec === undefined && d.id && c.ce === CYCLE1.ce){
+    tr   = d.tr === 'A' || d.tr === 'B' || d.tr === 'U' ? d.tr
+         : d.op0 != null ? (d.op0 < SPLIT ? 'A' : 'B') : 'U';
+    val  = tr === 'A' ? op : sla;
+    kase = 'unenrolled';                                     /* known CSP, not in the run */
+  } else {
+    /* a cycle with no official table yet — rolling estimate, payout confirmed by the run */
+    tr = d.tr;
+    if (tr !== 'A' && tr !== 'B' && tr !== 'U')
+      tr = d.op0 != null ? (d.op0 < SPLIT ? 'A' : 'B') : (op != null ? (op < SPLIT ? 'A' : 'B') : 'U');
+    val = tr === 'A' ? op : sla;
+    kase = tr === 'A'
+      ? (val == null ? 'nodata' : val >= TARGET ? 'pass' : val >= SPLIT ? 'near' : 'miss')
+      : (val == null ? 'none'   : val >= TARGET ? 'pass' : val >= SPLIT ? 'near' : 'miss');
+  }
   return {
-    tr: tr, op: op, sla: sla, val: val, kase: kase,
-    won: kase === 'pass' || kase === 'none',
+    tr: tr, op: op, sla: sla, val: val, kase: kase, rec: rec, official: official,
+    won: kase === 'paid' || kase === 'pass' || kase === 'none',
     gap: val == null ? null : Math.max(1, Math.ceil(TARGET - val)),
     band: val == null ? 'green' : val >= TARGET ? 'green' : val >= SPLIT ? 'amber' : 'red',
-    cyc: cycle()
+    cyc: c
   };
 }
 
@@ -175,12 +284,15 @@ function rowsHTML(rows){
 }
 
 function render(d){
-  var m = compute(d), c = m.cyc;
+  var m = compute(d), c = m.cyc, R = m.rec;
   var A = m.tr === 'A';
   var metric = A ? 'ऑप्टिकल पॉवर' : 'समय पर समाधान';
-  var pct = fmtPct(m.val);
-  var late = (d.stot || 0) - (d.sok || 0);
+  var pct = m.official ? fmtOff(m.val) : fmtPct(m.val);
+  var amt = R && R.amt > 0 ? R.amt : PRIZE;
   var payLine = c.payToday ? 'आज Install MG के साथ ही आपके खाते में' : fmtD(c.pay) + ' को Install MG के साथ आपके खाते में';
+  var mv = R ? Math.round((R.r - R.e) * 10) / 10 : null;      /* rolling movement over the cycle */
+  var mvLine = R ? '16 जुलाई: ' + fmtOff(R.e) + '% → 15 अगस्त: ' + fmtOff(R.r) + '%' +
+      (mv > 0 ? ' — <b>+' + fmtOff(mv) + ' सुधार</b> 📈' : mv < 0 ? ' (' + fmtOff(mv) + ')' : ' — जहाँ थे वहीं') : '';
 
   document.getElementById('subhdr').textContent = fmtD(c.cs) + ' – ' + fmtD(c.ce) + ' की साइकिल का हिसाब';
 
@@ -191,23 +303,33 @@ function render(d){
   }
 
   /* hero — what landed in the wallet */
-  var heroHTML = m.won
-    ? '<div class="card"><div class="k">इस साइकिल की सेहत गारंटी</div>'+
-        '<div class="earn-amt">₹'+inr(PRIZE)+'</div>'+
-        '<div class="earn-sub">'+payLine+' · install-service कमाई के ऊपर</div></div>'
-    : '<div class="card"><div class="k">इस साइकिल का सेहत bonus</div>'+
-        '<div class="earn-amt">₹0</div>'+
-        '<div class="earn-sub mut">कोई कटौती नहीं — install और service की कमाई पूरी आपकी</div></div>';
+  var heroHTML;
+  if (m.kase === 'unenrolled'){
+    heroHTML = '';
+  } else if (m.won){
+    heroHTML = '<div class="card"><div class="k">इस साइकिल की सेहत गारंटी</div>'+
+      '<div class="earn-amt">₹'+inr(amt)+'</div>'+
+      '<div class="earn-sub">'+payLine+(R && R.amt < PRIZE ? ' · '+R.d+'/31 दिन के हिसाब से' : ' · install-service कमाई के ऊपर')+'</div></div>';
+  } else {
+    heroHTML = '<div class="card"><div class="k">इस साइकिल का सेहत bonus</div>'+
+      '<div class="earn-amt">₹0</div>'+
+      '<div class="earn-sub mut">कोई कटौती नहीं — install और service की कमाई पूरी आपकी</div></div>';
+  }
 
-  /* standing — where the cycle closed */
-  var basis = A
-    ? (d.all ? inr(d.all)+' ping में से '+inr(d.ok)+' सही = '+pct+'% · आख़िरी 15 दिन का औसत' : '')
-    : (d.stot ? d.stot+' शिकायत · '+d.sok+' समय से बंद, '+late+' देर से = '+pct+'%'
-              : 'पूरी साइकिल में एक भी service शिकायत नहीं आई');
-  var need = m.val == null       ? 'गिनने को शिकायत ही नहीं थी'
-           : m.kase === 'pass'   ? '✓ 80% पार — वादा पूरा'
-           : m.kase === 'near'   ? 'बस '+m.gap+'% रह गया'
-           :                       '80% से '+m.gap+'% दूर रह गया';
+  /* standing — the number the gate used (official) or the rolling estimate */
+  var gateLab = m.official && !A && R.ic != null ? 'समय पर समाधान — साइकिल में आई शिकायतों पर' : metric;
+  var basis = m.official
+    ? gateLab + ' · final हिसाब की reading' +
+      (!A && R.ic != null && R.r < TARGET && R.amt > 0 ? '<br>रोज़ वाला 60-दिन का नंबर ('+fmtOff(R.r)+'%) अलग दिखता था — गिनती साइकिल की शिकायतों की हुई' : '') +
+      (mvLine ? '<br>' + mvLine : '')
+    : (A ? (d.all ? inr(d.all)+' ping में से '+inr(d.ok)+' सही = '+pct+'% · आख़िरी 15 दिन का औसत' : '')
+         : (d.stot ? d.stot+' शिकायत · '+d.sok+' समय से बंद, '+((d.stot||0)-(d.sok||0))+' देर से = '+pct+'%'
+                   : 'पूरी साइकिल में एक भी service शिकायत नहीं आई'));
+  var need = m.val == null            ? 'गिनने को शिकायत ही नहीं थी'
+           : m.won                    ? '✓ 80% पार — वादा पूरा'
+           : m.kase === 'unenrolled'  ? 'ये सिर्फ़ आपकी जानकारी के लिए है'
+           : m.gap <= 5               ? 'बस '+m.gap+'% रह गया'
+           :                            '80% से '+m.gap+'% दूर रह गया';
   var standHTML = m.val == null
     ? '<div class="card f-green"><div class="k">आप कहाँ बंद हुए</div>'+
         '<div class="wyh-need" style="margin-top:6px">'+need+'</div>'+
@@ -221,14 +343,41 @@ function render(d){
 
   /* settlement — the verdict card */
   var s;
-  if (m.kase === 'pass'){
+  var amtS = '₹'+inr(amt);
+  if (m.kase === 'paid'){
+    s = {tone:'ok', ph:'🛡 साइकिल का हिसाब', title:'बधाई हो — '+amtS+' पक्का 🎉',
+      body:'आपने '+gateLab+' <b>80% पार</b> रखा — final reading <b>'+pct+'%</b>. '+amtS+' '+payLine+'.',
+      rows:[[gateLab+' — final', pct+'%'], ['शर्त — 80% या ऊपर','✓ पूरा'],
+            ['सेहत गारंटी — वॉलेट में', amtS,' total']]};
+  } else if (m.kase === 'door'){
+    s = {tone:'na', ph:'🛡 साइकिल का हिसाब',
+      title: m.gap <= 5 ? 'बस '+m.gap+'% रह गया' : 'इस बार 80% नहीं हो पाया',
+      body:'आपका '+gateLab+' <b>'+pct+'%</b> पर बंद हुआ — दरवाज़े तक पहुँचे. कोई कटौती नहीं: install और service की कमाई पूरी आपकी. नई साइकिल आज से — यही मेहनत अगली बार ₹'+inr(PRIZE)+' बना देगी.',
+      rows:[[gateLab, pct+'%'], ['चाहिए था','80% या ऊपर'],
+            ['सेहत bonus — इस साइकिल','₹0',' total']]};
+  } else if (m.kase === 'improved'){
+    s = {tone:'na', ph:'🛡 साइकिल का हिसाब', title:'80% नहीं — पर आप '+(mv>0?'+'+fmtOff(mv)+' ':'')+'सुधरे 📈',
+      body:'नंबर सही दिशा में है ('+mvLine+'). इस साइकिल bonus नहीं बना, पर <b>कोई कटौती भी नहीं</b> — और यही रफ़्तार रही तो अगली साइकिल ₹'+inr(PRIZE)+' आपका है.',
+      rows:[[gateLab, pct+'%'], ['चाहिए था','80% या ऊपर'],
+            ['सेहत bonus — इस साइकिल','₹0',' total']]};
+  } else if (m.kase === 'held'){
+    s = {tone:'na', ph:'🛡 साइकिल का हिसाब', title:'इस साइकिल 80% नहीं हो पाया',
+      body:'आपका '+gateLab+' <b>'+pct+'%</b> पर बंद हुआ. साफ़ बात: इस साइकिल सेहत bonus नहीं बना — पर <b>कोई कटौती भी नहीं</b>, install और service की कमाई पूरी आपकी. नई साइकिल आज से शुरू है, गिनती फिर 0 से.',
+      rows:[[gateLab, pct+'%'], ['चाहिए था','80% या ऊपर'],
+            ['सेहत bonus — इस साइकिल','₹0',' total']]};
+  } else if (m.kase === 'unenrolled'){
+    s = {tone:'applied', ph:'🛡 साइकिल का हिसाब', title:'आप इस साइकिल शामिल नहीं थे',
+      body:'ये हिसाब सिर्फ़ enrolled CSPs का बनता है — इस साइकिल की list में ये ID नहीं थी. अगली साइकिल का हिस्सा बनने के लिए app में <b>सेहत गारंटी</b> पर sign-up कीजिए, या helpline पर पूछिए.',
+      rows:[['इस साइकिल','enrolled नहीं'],
+            ['अगली साइकिल की गारंटी','₹'+inr(PRIZE),' total']]};
+  } else if (m.kase === 'pass'){
     s = {tone:'ok', ph:'🛡 साइकिल का हिसाब', title:'बधाई हो — ₹'+inr(PRIZE)+' पक्का 🎉',
-      body:'आपने अपने नेटवर्क का '+metric+' <b>80% पार</b> रखा — वही एक शर्त थी. ₹'+inr(PRIZE)+' '+payLine+'.',
+      body:'आपने अपना '+metric+' <b>80% पार</b> रखा — वही एक शर्त थी. ₹'+inr(PRIZE)+' '+payLine+'. Final payout run से confirm होता है.',
       rows:[[metric, pct+'%'], ['शर्त — 80% या ऊपर','✓ पूरा'],
             ['सेहत गारंटी — वॉलेट में','₹'+inr(PRIZE),' total']]};
   } else if (m.kase === 'none'){
     s = {tone:'applied', ph:'🛡 साइकिल का हिसाब', title:'एक भी शिकायत नहीं — गारंटी बनी रही',
-      body:'इस साइकिल आपके नेटवर्क से <b>कोई service शिकायत आई ही नहीं</b> — गिनने को कुछ था ही नहीं, और साफ़ सेवा पर गारंटी टूटती नहीं. ₹'+inr(PRIZE)+' '+payLine+'.',
+      body:'इस साइकिल आपके नेटवर्क से <b>कोई service शिकायत आई ही नहीं</b> — गिनने को कुछ था ही नहीं, और साफ़ सेवा पर गारंटी टूटती नहीं. ₹'+inr(PRIZE)+' '+payLine+'. Final payout run से confirm होता है.',
       rows:[['शिकायतें इस साइकिल','0'],
             ['सेहत गारंटी — वॉलेट में','₹'+inr(PRIZE),' total']]};
   } else if (m.kase === 'near'){
@@ -242,7 +391,7 @@ function render(d){
       rows:[[metric, pct+'%'], ['चाहिए था','80% या ऊपर'],
             ['सेहत bonus — इस साइकिल','₹0',' total']]};
   }
-  var fineHTML = '<div class="sb">साफ़ बात</div><div class="li">'+
+  var fineHTML = m.kase === 'unenrolled' ? '' : '<div class="sb">साफ़ बात</div><div class="li">'+
     '· ये ₹'+inr(PRIZE)+' आपकी install और service की कमाई के <b>ऊपर</b> है<br>'+
     '· 80% न होने पर कोई कटौती नहीं — बस bonus नहीं बनता<br>'+
     '· हर साइकिल नई गिनती, नया मौका</div>';
@@ -250,17 +399,29 @@ function render(d){
     '<div class="title">'+s.title+'</div><div class="bd">'+s.body+'</div>'+
     rowsHTML(s.rows)+fineHTML+'</div>';
 
+  /* pro-rata explainer — only when the payout is day-counted (mid-cycle opt-in) */
+  var prorataHTML = '';
+  if (R && R.amt > 0 && R.amt < PRIZE){
+    prorataHTML = '<div class="settle days"><div class="ph">🗓️ पूरे ₹'+inr(PRIZE)+' क्यों नहीं?</div>'+
+      rowsHTML([['पूरी साइकिल की गारंटी','₹'+inr(PRIZE)],
+                ['आपके दिन — '+R.j+' को जुड़े', R.d+' / 31'],
+                ['आपकी इस साइकिल की गारंटी','₹'+inr(R.amt),' total']])+
+      '<div class="days-next">नई साइकिल में आप पहले दिन से हैं — 80% रखिए, पूरे ₹'+inr(PRIZE)+' मिलेंगे.</div></div>';
+  }
+
   /* next cycle — already running */
   var dailyUrl = DAILY[A ? 'A' : 'B'] + (d.id ? '?cspId=' + encodeURIComponent(d.id) : '');
   var nextHTML = '<div class="settle days"><div class="ph">🗓️ नई साइकिल शुरू हो चुकी है</div>'+
     rowsHTML([['साइकिल', fmtD(c.ns)+' – '+fmtD(c.ne)],
               ['वही एक शर्त','80% या ऊपर'],
               ['गारंटी','₹'+inr(PRIZE),' total']])+
-    '<div class="days-next">आज का ऑप्टिकल पॉवर आपका नया track तय करेगा — रोज़ का checkup app में देखते रहिए.</div>'+
+    '<div class="days-next">'+(m.kase === 'unenrolled'
+      ? 'शामिल होते ही रोज़ का checkup और साइकिल का हिसाब यहीं दिखेगा.'
+      : 'रोज़ का checkup app में देखते रहिए — सुधार वहीं दिखता है.')+'</div>'+
     '<a class="dlbtn" href="'+dailyUrl+'">अपनी आज की सेहत देखें →</a></div>';
 
   document.getElementById('body').innerHTML =
-    heroHTML + standHTML + settleHTML + nextHTML +
+    heroHTML + standHTML + settleHTML + prorataHTML + nextHTML +
     '<div class="foot">एक बार शामिल — हर साइकिल नया target, नया ₹'+inr(PRIZE)+'.<br>सवाल हो तो helpline पर call कीजिए.</div>';
 
   try{
@@ -294,14 +455,13 @@ async function getCsp(){
 
 /* ── demo (preview every case) — shows with ?demo=1 or no cspId ── */
 var DEMO = {
-  apass:{label:'A1 · ऑप्टिकल 87% — ₹10,000', tr:'A', ok:3567, all:4100},
-  anear:{label:'A2 · ऑप्टिकल 77% — बस 3% रह गया', tr:'A', ok:3157, all:4100},
-  amiss:{label:'A3 · ऑप्टिकल 46% — bonus नहीं', tr:'A', ok:1882, all:4086},
-  bpass:{label:'B1 · समाधान 90% — ₹10,000', tr:'B', sok:186, stot:206},
-  bnear:{label:'B2 · समाधान 79% — बस 2% रह गया', tr:'B', sok:22, stot:28},
-  bmiss:{label:'B3 · समाधान 71% — bonus नहीं', tr:'B', sok:15, stot:21},
-  bnone:{label:'B4 · 0 शिकायत — गारंटी बनी रही', tr:'B', sok:0, stot:0},
-  upass:{label:'U · बिना telemetry — समाधान 85%', tr:'U', sok:17, stot:20}
+  paidfull:{label:'1 · Optical 80.6% — पूरे ₹10,000', rec:{c:'A',g:1,e:74.7,r:80.6,amt:10000,j:'16 जुलाई',d:31}},
+  paidpro :{label:'2 · जुड़े 17 जुलाई — ₹9,677 (30/31 दिन)', rec:{c:'A',g:1,e:80.1,r:97.7,amt:9677,j:'17 जुलाई',d:30}},
+  paidic  :{label:'3 · साइकिल-SLA 84.6% से जीते (rolling 41.5%)', rec:{c:'B',g:1,e:46.2,r:41.5,ic:84.6,amt:10000,j:'16 जुलाई',d:31}},
+  door    :{label:'4 · दरवाज़े पर — 79.2%, ₹0', rec:{c:'A',g:3,e:76.9,r:79.2}},
+  improved:{label:'5 · +30 pts सुधरे — अभी ₹0', rec:{c:'A',g:4,e:31.1,r:61.3}},
+  held    :{label:'6 · 80% नहीं — ₹0', rec:{c:'B',g:5,e:70,r:66.7,ic:50}},
+  unenr   :{label:'7 · enrolled नहीं थे', rec:null, tr:'B', sok:50, stot:55, id:'demo0x'}
 };
 function mountDemo(){
   var el = document.getElementById('demo'); el.hidden = false;
@@ -314,7 +474,7 @@ function mountDemo(){
     el.appendChild(b);
   });
   var n = document.createElement('div'); n.className = 'note';
-  n.textContent = 'हर साइकिल इनमें से एक पर बंद होती है';
+  n.textContent = 'हर enrolled CSP इनमें से एक पर बंद होता है';
   el.appendChild(n);
   el.querySelector('button').click();
 }
@@ -325,6 +485,8 @@ function mountDemo(){
   var id = cspIdFromUrl();
   if (!id || q.get('demo') === '1'){ mountDemo(); return; }
   var d = await getCsp();
+  /* an enrolled CSP renders from the official table even if data.json misses them */
+  if (!d && id && cycle().ce === CYCLE1.ce && CYCLE1.data[id]) d = {id: id};
   if (!d){
     document.getElementById('body').innerHTML =
       '<div class="skel">'+(id
