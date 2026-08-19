@@ -291,8 +291,8 @@ function render(d){
   var amt = R && R.amt > 0 ? R.amt : PRIZE;
   var payLine = c.payToday ? 'आज ही आपके खाते में' : fmtD(c.pay) + ' को आपके खाते में';
   var mv = R ? Math.round((R.r - R.e) * 10) / 10 : null;      /* rolling movement over the cycle */
-  var mvLine = R ? '16 जुलाई: ' + fmtOff(R.e) + '% → 15 अगस्त: ' + fmtOff(R.r) + '%' +
-      (mv > 0 ? ' — <b>+' + fmtOff(mv) + ' सुधार</b> 📈' : mv < 0 ? ' (' + fmtOff(mv) + ')' : ' — जहाँ थे वहीं') : '';
+  /* movement shows only when it is a positive story — a flat or falling line is never printed */
+  var mvLine = R && mv > 0 ? '16 जुलाई: ' + fmtOff(R.e) + '% → 15 अगस्त: ' + fmtOff(R.r) + '% — <b>+' + fmtOff(mv) + ' सुधार</b> 📈' : '';
 
   document.getElementById('subhdr').textContent = fmtD(c.cs) + ' – ' + fmtD(c.ce) + ' की साइकिल का हिसाब';
 
@@ -421,8 +421,7 @@ function render(d){
     '<a class="dlbtn" href="'+dailyUrl+'">अपनी आज की सेहत देखें →</a></div>';
 
   document.getElementById('body').innerHTML =
-    heroHTML + standHTML + settleHTML + prorataHTML + nextHTML +
-    '<div class="foot">एक बार शामिल — हर साइकिल नया target, नया ₹'+inr(PRIZE)+'.<br>सवाल हो तो helpline पर call कीजिए.</div>';
+    heroHTML + standHTML + settleHTML + prorataHTML + nextHTML;
 
   try{
     var ev = 'Sehat_Settle_' + m.tr + '_' + m.kase;
