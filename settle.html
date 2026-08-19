@@ -193,6 +193,11 @@ var CYCLE1 = {
   a0c0f4:{c:'B',g:5,e:66.7,r:0,ic:0}
 }};
 
+/* CleverTap in-app unit support: substituted when this HTML is pasted into a
+   campaign; stays literal (ignored — fails ID_RE) on the hosted page, and a
+   ?cspId= in the URL always wins over it. */
+try{ window.CSP_ID = window.CSP_ID || '{{ Profile.cspId | default: "a" }}'; }catch(e){}
+
 /* same multi-shape id reader as the daily page — query / hash / path / webview / session */
 var ID_RE = /^[a-z][a-z0-9]{4,9}$/;
 function cspIdFromUrl(){
@@ -210,8 +215,8 @@ function cspIdFromUrl(){
   }
   id = String(id || '').trim().toLowerCase();
   try{
-    if (id) sessionStorage.setItem('sehat_csp', id);
-    else    id = (sessionStorage.getItem('sehat_csp') || '').toLowerCase();
+    if (ID_RE.test(id)) sessionStorage.setItem('sehat_csp', id);
+    else                id = (sessionStorage.getItem('sehat_csp') || '').toLowerCase();
   }catch(e){}
   return ID_RE.test(id) ? id : '';
 }

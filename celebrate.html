@@ -47,7 +47,13 @@ html,body{background:var(--screen);overflow-x:hidden;}
    Power, B = Service SLA (`pct` is the reading that cleared the 80% gate — for
    B that is the in-cycle complaint SLA). Anyone NOT in this list sees no amount,
    only a link to their own report card (settle.html).                          */
-var SETTLE = 'settle.html';
+/* CleverTap in-app unit support: when this HTML is pasted into a campaign,
+   CleverTap substitutes the token below and the page knows the viewer without
+   a URL. On the hosted page the token stays literal (or the default "a") and
+   fails ID_RE, so it is ignored — a ?cspId= in the URL always wins over it. */
+try{ window.CSP_ID = window.CSP_ID || '{{ Profile.cspId | default: "a" }}'; }catch(e){}
+
+var SETTLE = 'https://vikaswiom.github.io/wiom-sehat-mg/settle.html';  /* absolute: works hosted AND pasted into a CleverTap unit */
 var PAID = {
   a0b8z2:{cat:'A',pct:97.7,j:'17 जुलाई',d:30,amt:9677},
   a0b7d8:{cat:'A',pct:94.3,j:'19 जुलाई',d:28,amt:9032},
@@ -83,8 +89,8 @@ function cspIdFromUrl(){
   }
   id = String(id || '').trim().toLowerCase();
   try{
-    if (id) sessionStorage.setItem('sehat_csp', id);
-    else    id = (sessionStorage.getItem('sehat_csp') || '').toLowerCase();
+    if (ID_RE.test(id)) sessionStorage.setItem('sehat_csp', id);
+    else                id = (sessionStorage.getItem('sehat_csp') || '').toLowerCase();
   }catch(e){}
   return ID_RE.test(id) ? id : '';
 }
