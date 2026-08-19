@@ -289,7 +289,7 @@ function render(d){
   var metric = A ? 'ऑप्टिकल पॉवर' : 'समय पर समाधान';
   var pct = m.official ? fmtOff(m.val) : fmtPct(m.val);
   var amt = R && R.amt > 0 ? R.amt : PRIZE;
-  var payLine = c.payToday ? 'आज Install MG के साथ ही आपके खाते में' : fmtD(c.pay) + ' को Install MG के साथ आपके खाते में';
+  var payLine = c.payToday ? 'आज ही आपके खाते में' : fmtD(c.pay) + ' को आपके खाते में';
   var mv = R ? Math.round((R.r - R.e) * 10) / 10 : null;      /* rolling movement over the cycle */
   var mvLine = R ? '16 जुलाई: ' + fmtOff(R.e) + '% → 15 अगस्त: ' + fmtOff(R.r) + '%' +
       (mv > 0 ? ' — <b>+' + fmtOff(mv) + ' सुधार</b> 📈' : mv < 0 ? ' (' + fmtOff(mv) + ')' : ' — जहाँ थे वहीं') : '';
