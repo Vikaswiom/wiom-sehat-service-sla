@@ -1,0 +1,132 @@
+<!doctype html><html lang="hi"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
+<title>बधाई हो — सेहत गारंटी</title>
+<style>
+/* Design system inherited from wiom-mbg-kamai-kavach — celebration screen for PAID CSPs only. */
+:root{--maroon:#3f2a44;--purple:#6D17CE;--purpbg:#F4EBFC;--pill:#EBDDFB;--green:#008043;--green-bg:#E6F6EE;
+--text:#181022;--t2:#6b6478;--t3:#a8a2b4;--card:#fff;--screen:#F7F5FA;--line:#ECE7F2;--stroke2:#DED8EA;}
+*{box-sizing:border-box;margin:0;font-family:"Noto Sans Devanagari","Nirmala UI","Segoe UI",system-ui,sans-serif;}
+html,body{background:var(--screen);overflow-x:hidden;}
+.wrap{min-height:100vh;background:var(--screen);color:var(--text);max-width:430px;margin:0 auto;line-height:1.5;overflow-x:hidden;}
+.hdr{background:var(--maroon);color:#fff;padding:13px 15px;display:flex;align-items:center;gap:11px;}
+.hdr .t{font-size:15.5px;font-weight:700;flex:1;}
+.subhdr{background:var(--maroon);color:#e8dcec;padding:0 15px 11px;font-size:12px;font-weight:600;}
+.body{padding:13px;display:flex;flex-direction:column;gap:11px;}
+.hero{background:var(--green-bg);border:1px solid #BFE6D2;border-radius:16px;padding:22px 15px;text-align:center;}
+.hero .em{font-size:34px;line-height:1.2;}
+.hero .h{font-size:19px;font-weight:800;color:var(--green);margin-top:6px;letter-spacing:-.3px;}
+.hero .amt{font-size:44px;font-weight:800;letter-spacing:-2px;color:var(--green);margin:8px 0 2px;font-variant-numeric:tabular-nums;}
+.hero .sub{font-size:12.5px;font-weight:700;color:#1d5c3d;line-height:1.55;}
+.hero .why{display:inline-block;background:#fff;border:1px solid #BFE6D2;border-radius:999px;
+  padding:6px 13px;font-size:12px;font-weight:800;color:var(--green);margin-top:12px;}
+.note{background:#F1EEF6;border:1px solid var(--stroke2);border-radius:15px;padding:12px 14px;
+  font-size:12px;color:var(--t2);font-weight:600;line-height:1.6;}
+.note b{color:var(--maroon);}
+.next{background:var(--purpbg);border:1px solid #e6d6fa;border-radius:15px;padding:13px 14px;}
+.next .h{font-size:13px;font-weight:800;color:var(--purple);}
+.next .s{font-size:12px;color:#5a4a86;font-weight:600;line-height:1.6;margin-top:3px;}
+.dlbtn{display:block;width:100%;margin:2px 0 0;padding:13px 14px;border:none;border-radius:12px;background:var(--purple);
+  color:#fff;text-align:center;text-decoration:none;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;
+  box-shadow:0 2px 8px rgba(109,23,206,.22);-webkit-tap-highlight-color:transparent;}
+.dlbtn:active{transform:translateY(1px);}
+.skel{color:var(--t3);font-size:12.5px;font-weight:600;text-align:center;padding:34px 14px;line-height:1.7;}
+.skel a{color:var(--purple);font-weight:800;}
+</style></head>
+<body>
+<div class="wrap"><div class="hdr"><span class="t">सेहत गारंटी</span></div>
+  <div class="subhdr">16 जुलाई – 15 अगस्त की साइकिल</div>
+  <div class="body" id="body"><div class="skel">लाया जा रहा है…</div></div>
+</div>
+
+<script>
+/* ── Sehat MG — "आपको इतने मिले" celebration, PAID CSPs only ──────────────────
+   Self-contained: the 16 winners of the 16 Jul–15 Aug run are baked in (paid
+   16 Aug). Amount = pro-rata by opt-in (days ÷ 31 × ₹10,000). cat A = Optical
+   Power, B = Service SLA (`pct` is the reading that cleared the 80% gate — for
+   B that is the in-cycle complaint SLA). Anyone NOT in this list sees no amount,
+   only a link to their own report card (settle.html).                          */
+var SETTLE = 'settle.html';
+var PAID = {
+  a0b8z2:{cat:'A',pct:97.7,j:'17 जुलाई',d:30,amt:9677},
+  a0b7d8:{cat:'A',pct:94.3,j:'19 जुलाई',d:28,amt:9032},
+  a0b8z4:{cat:'A',pct:83.1,j:'17 जुलाई',d:30,amt:9677},
+  a0b8z3:{cat:'A',pct:81.9,j:'17 जुलाई',d:30,amt:9677},
+  a0b9v7:{cat:'A',pct:80.7,j:'16 जुलाई',d:31,amt:10000},
+  a0b7e1:{cat:'A',pct:80.6,j:'16 जुलाई',d:31,amt:10000},
+  a0b5w2:{cat:'B',pct:100,j:'16 जुलाई',d:31,amt:10000},
+  a0b6e9:{cat:'B',pct:98.6,j:'16 जुलाई',d:31,amt:10000},
+  a0b6o9:{cat:'B',pct:92.3,j:'16 जुलाई',d:31,amt:10000},
+  a0c0b8:{cat:'B',pct:92.4,j:'16 जुलाई',d:31,amt:10000},
+  a0b6j9:{cat:'B',pct:91,j:'16 जुलाई',d:31,amt:10000},
+  a0b9h3:{cat:'B',pct:90.8,j:'16 जुलाई',d:31,amt:10000},
+  a0b7b3:{cat:'B',pct:84.6,j:'16 जुलाई',d:31,amt:10000},
+  a0b9m3:{cat:'B',pct:81.2,j:'18 जुलाई',d:29,amt:9355},
+  a0b7g9:{cat:'B',pct:80,j:'17 जुलाई',d:30,amt:9677},
+  a0a7g1:{cat:'B',pct:80,j:'16 जुलाई',d:31,amt:10000}
+};
+
+var ID_RE = /^[a-z][a-z0-9]{4,9}$/;
+function cspIdFromUrl(){
+  var q = new URLSearchParams(location.search);
+  var id = q.get('cspId') || q.get('cspid') || q.get('csp_id') || q.get('id') || '';
+  if (!id && location.hash){
+    var h = location.hash.slice(1);
+    id = h.indexOf('=') > -1 ? (new URLSearchParams(h).get('cspId') || '') : h;
+  }
+  if (!id){
+    try{
+      id = window.CSP_ID || window.cspId || '';
+      if (!id && window.Android && typeof window.Android.getCspId === 'function') id = window.Android.getCspId();
+    }catch(e){}
+  }
+  id = String(id || '').trim().toLowerCase();
+  try{
+    if (id) sessionStorage.setItem('sehat_csp', id);
+    else    id = (sessionStorage.getItem('sehat_csp') || '').toLowerCase();
+  }catch(e){}
+  return ID_RE.test(id) ? id : '';
+}
+function inr(n){ return Number(n).toLocaleString('en-IN'); }
+function fmtOff(v){ return v % 1 ? v.toFixed(1) : String(v); }
+
+function render(id, w){
+  var A = w.cat === 'A';
+  var metric = A ? 'ऑप्टिकल पॉवर' : 'समय पर समाधान';
+  var settleUrl = SETTLE + (id ? '?cspId=' + encodeURIComponent(id) : '');
+  var noteHTML = w.amt < 10000
+    ? '<div class="note">🗓️ <b>पूरे ₹10,000 क्यों नहीं?</b> आप '+w.j+' को जुड़े थे — हिसाब आपके <b>'+w.d+'/31 दिन</b> का बना. '+
+      'इस साइकिल आप पहले दिन से हैं — 80% रखिए, पूरे ₹10,000 मिलेंगे.</div>'
+    : '';
+  document.getElementById('body').innerHTML =
+    '<div class="hero"><div class="em">🎉</div>'+
+      '<div class="h">बधाई हो!</div>'+
+      '<div class="amt">₹'+inr(w.amt)+'</div>'+
+      '<div class="sub">आपकी सेहत गारंटी — 16 अगस्त को आपके खाते में<br>आपकी install-service कमाई के ऊपर</div>'+
+      '<div class="why">'+metric+' '+fmtOff(w.pct)+'% — 80% पार ✓</div>'+
+    '</div>'+
+    noteHTML+
+    '<div class="next"><div class="h">नई साइकिल चालू है — 16 अगस्त से 15 सितंबर</div>'+
+      '<div class="s">वही एक शर्त: '+metric+' 80% या ऊपर. फिर से ₹10,000.</div></div>'+
+    '<a class="dlbtn" href="'+settleUrl+'">पूरा हिसाब देखें →</a>';
+  try{
+    if (window.CleverTap && window.CleverTap.pushEvent) window.CleverTap.pushEvent('Sehat_Celebrate_' + w.cat);
+    if (window.console) console.log('[SehatCelebrate]', id, w.amt);
+  }catch(e){}
+}
+
+(function(){
+  var q = new URLSearchParams(location.search);
+  if (q.get('demo') === '1'){ render('', PAID[q.get('case') === 'pro' ? 'a0b8z2' : 'a0b7e1']); return; }
+  var id = cspIdFromUrl();
+  var w = id ? PAID[id] : null;
+  if (w){ render(id, w); return; }
+  /* not a winner / no id — never show an amount, never blame */
+  document.getElementById('body').innerHTML =
+    '<div class="skel">'+(id
+      ? 'आपका इस साइकिल का पूरा हिसाब यहाँ है —<br><a href="'+SETTLE+'?cspId='+encodeURIComponent(id)+'">अपना report card देखें →</a>'
+      : 'ये पेज आपकी CSP ID के साथ खुलता है.<br>App में “सेहत गारंटी” पर tap कीजिए.')+'</div>';
+})();
+</script>
+</body></html>
