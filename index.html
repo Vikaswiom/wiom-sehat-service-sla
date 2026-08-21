@@ -47,6 +47,8 @@ html,body{background:var(--screen);}
 .tkt .tn em{font-style:normal;font-weight:600;color:#8a6a30;font-size:11px;}
 .tkt .tc{font-size:11px;font-weight:800;color:var(--purple);white-space:nowrap;flex:none;font-variant-numeric:tabular-nums;}
 .tkt .tc.warn{color:var(--red);}
+.dlbtn2{display:block;width:100%;margin:0;padding:12px 14px;border:1px solid var(--stroke2);border-radius:12px;background:var(--purpbg);color:var(--purple);font-family:inherit;font-size:13px;font-weight:800;text-align:center;text-decoration:none;-webkit-tap-highlight-color:transparent;}
+.dlbtn2:active{transform:translateY(1px);}
 .act .fs{font-size:11px;color:#8a6a30;font-weight:600;line-height:1.5;}
 .wait{background:var(--tealbg);border:1px solid var(--tealline);border-radius:15px;padding:12px 13px;display:flex;gap:9px;}
 .wait .ic{font-size:15px;line-height:1.2;flex:none;}
@@ -110,6 +112,11 @@ var PROXY_URL = "";
    The page reads that local data.json first; DATA_URL is a cross-repo fallback used
    only if the local file ever fails to load. */
 var DATA_URL = "https://vikaswiom.github.io/wiom-sehat-mg/data.json";
+
+/* Last-month settlement (हिसाब) — track-aware per CSP, mirrors settle.html's DAILY map.
+   Track A (Optical Power) → optical deployment · Track B (Service SLA) → service-sla. */
+var SETTLE = {A:'https://vikaswiom.github.io/wiom-sehat-mg/settle.html',
+              B:'https://vikaswiom.github.io/wiom-sehat-service-sla/settle.html'};
 
 var TARGET = 80;   /* the ₹10,000 gate */
 var SPLIT  = 75;   /* the A/B track line — also the amber floor */
@@ -367,6 +374,8 @@ function render(d, m){
       '<div class="es">' + metric + ' ही इस साइकिल आपके ₹10,000 तय करता है.</div>' +
       faq(qa) +
     '</div>' +
+
+    '<a class="dlbtn2" href="' + SETTLE[d.tr === 'A' ? 'A' : 'B'] + '?cspId=' + encodeURIComponent(d.id) + '">पिछले महीने का हिसाब देखें →</a>' +
 
     '<div class="foot">एक बार शामिल — हर साइकिल नया target, नया ₹10,000.<br>सवाल हो तो helpline पर call कीजिए.</div>';
 }
