@@ -352,9 +352,9 @@ function render(d){
   var fineHTML = m.kase === 'unenrolled' ? '' : '<div class="sb">साफ़ बात</div><div class="li">'+
     '· ये ₹'+inr(PRIZE)+' आपकी इंस्टॉल और सर्विस की कमाई के <b>ऊपर</b> है<br>'+
     '· 80% न होने पर कोई कटौती नहीं — बस बोनस नहीं बनता</div>';
-  var settleHTML = '<div class="settle '+s.tone+'">'+
-    '<div class="title">'+s.title+'</div><div class="bd">'+s.body+'</div>'+
-    rowsHTML(s.rows)+fineHTML+'</div>';
+  var settleHTML = '<details class="settle '+s.tone+' dd"><summary class="title">'+s.title+CHEV+'</summary>'+
+    '<div class="dd-in"><div class="bd">'+s.body+'</div>'+
+    rowsHTML(s.rows)+fineHTML+'</div></details>';
 
   /* pro-rata explainer — only when the payout is day-counted (mid-cycle opt-in) */
   var prorataHTML = '';
@@ -376,7 +376,7 @@ function render(d){
     '<br><br>आपकी मेहनत के लिए शुक्रिया 🙏 नेटवर्क अच्छा रखिए — वही आपके ग्राहक और कमाई बनाए रखता है.</div></details>';
 
   document.getElementById('body').innerHTML =
-    endedHTML + heroHTML + standHTML + prorataHTML + settleHTML;
+    heroHTML + standHTML + prorataHTML + settleHTML + endedHTML;
 
   try{
     var ev = 'Sehat_Settle_' + m.tr + '_' + m.kase;
