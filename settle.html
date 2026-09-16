@@ -60,13 +60,13 @@ html,body{background:var(--screen);overflow-x:hidden;}
 /* नई-साइकिल card */
 .settle.days{background:#F1EEF6;border-color:var(--stroke2);}
 .settle.days .ph,.settle.days .title{color:var(--maroon);} .settle.days .row.total .amt{color:var(--maroon);}
-.settle.ended{padding:0;overflow:hidden;}
-.settle.ended>summary{list-style:none;cursor:pointer;padding:14px 15px;display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:15px;font-weight:800;color:var(--purple);line-height:1.35;letter-spacing:-.3px;margin:0;}
-.settle.ended>summary::-webkit-details-marker{display:none;}
-.settle.ended>summary .chev{flex:none;display:inline-flex;align-items:center;color:var(--purple);transition:transform .2s;}
-.settle.ended>summary .chev svg{display:block;width:24px;height:24px;}
-.settle.ended[open]>summary .chev{transform:rotate(180deg);}
-.settle.ended>.bd{padding:0 15px 15px;color:var(--text);}
+.settle.dd{padding:0;overflow:hidden;}
+.settle.dd>summary{list-style:none;cursor:pointer;padding:14px 15px;display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:15px;font-weight:800;line-height:1.35;letter-spacing:-.3px;margin:0;}
+.settle.dd>summary::-webkit-details-marker{display:none;}
+.settle.dd>summary .chev{flex:none;display:inline-flex;align-items:center;color:inherit;transition:transform .2s;}
+.settle.dd>summary .chev svg{display:block;width:24px;height:24px;}
+.settle.dd[open]>summary .chev{transform:rotate(180deg);}
+.settle.dd>.bd,.settle.dd>.dd-in{padding:0 15px 15px;color:var(--text);}
 .days-next{font-size:11.5px;color:var(--purple);font-weight:700;line-height:1.5;margin-top:11px;}
 .dlbtn{display:block;width:100%;margin:11px 0 0;padding:13px 14px;border:none;border-radius:12px;background:var(--purple);
   color:#fff;text-align:center;text-decoration:none;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;
@@ -108,6 +108,7 @@ html,body{background:var(--screen);overflow-x:hidden;}
 var PROXY_URL = "";
 var DATA_URL  = "https://vikaswiom.github.io/wiom-sehat-mg/data.json";  /* cross-repo fallback */
 var TARGET = 80, SPLIT = 75, PRIZE = 10000;
+var CHEV = '<span class="chev"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></span>';
 var DAILY = {A:'https://vikaswiom.github.io/wiom-sehat-mg/',
              B:'https://vikaswiom.github.io/wiom-sehat-service-sla/'};
 
@@ -303,7 +304,7 @@ function render(d){
   var s;
   var amtS = '₹'+inr(amt);
   if (m.kase === 'paid'){
-    s = {tone:'ok', ph:'🛡 साइकिल का हिसाब', title:'बधाई हो — '+amtS+' पक्का 🎉',
+    s = {tone:'ok', ph:'🛡 साइकिल का हिसाब', title:'बधाई हो — '+amtS+' मिले 🎉',
       body:'आपने '+gateLab+' <b>80% पार</b> रखा — फ़ाइनल रीडिंग <b>'+pct+'%</b>. '+amtS+' '+payLine+'.',
       rows:[[gateLab+' — फ़ाइनल', pct+'%'], ['शर्त — 80% या ऊपर','✓ पूरा'],
             ['सेहत गारंटी — वॉलेट में', amtS,' total']]};
@@ -328,7 +329,7 @@ function render(d){
       body:'आपका '+metric+' इस साइकिल <b>80% से कम</b> रहा — इसलिए इस बार सेहत बोनस नहीं बना. <b>कोई कटौती नहीं</b>: इंस्टॉल और सर्विस की कमाई पूरी आपकी.',
       rows:[[metric, '80% से कम'], ['सेहत बोनस','₹0',' total']]};
   } else if (m.kase === 'pass'){
-    s = {tone:'ok', ph:'🛡 साइकिल का हिसाब', title:'बधाई हो — ₹'+inr(PRIZE)+' पक्का 🎉',
+    s = {tone:'ok', ph:'🛡 साइकिल का हिसाब', title:'बधाई हो — ₹'+inr(PRIZE)+' मिले 🎉',
       body:'आपने अपना '+metric+' <b>80% पार</b> रखा — वही एक शर्त थी. ₹'+inr(PRIZE)+' '+payLine+'. फ़ाइनल पेआउट रन से कन्फर्म होता है.',
       rows:[[metric, pct+'%'], ['शर्त — 80% या ऊपर','✓ पूरा'],
             ['सेहत गारंटी — वॉलेट में','₹'+inr(PRIZE),' total']]};
@@ -366,7 +367,7 @@ function render(d){
   }
 
   /* program wind-down — this was the final cycle (no next cycle) */
-  var endedHTML = '<details class="settle applied ended"><summary class="title">व्योम की तरफ़ से यह प्रोग्राम अब बंद हो गया है<span class="chev"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></span></summary>'+
+  var endedHTML = '<details class="settle applied dd"><summary class="title">व्योम की तरफ़ से यह प्रोग्राम अब बंद हो गया है'+CHEV+'</summary>'+
     '<div class="bd">'+(m.kase === 'unenrolled'
       ? '16 अगस्त–15 सितंबर की यह साइकिल इस प्रोग्राम की <b>आख़िरी साइकिल</b> थी. आगे कोई नई साइकिल नहीं है.'
       : m.won
@@ -375,7 +376,7 @@ function render(d){
     '<br><br>आपकी मेहनत के लिए शुक्रिया 🙏 नेटवर्क अच्छा रखिए — वही आपके ग्राहक और कमाई बनाए रखता है.</div></details>';
 
   document.getElementById('body').innerHTML =
-    endedHTML + heroHTML + standHTML + settleHTML + prorataHTML;
+    endedHTML + heroHTML + standHTML + prorataHTML + settleHTML;
 
   try{
     var ev = 'Sehat_Settle_' + m.tr + '_' + m.kase;
