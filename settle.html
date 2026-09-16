@@ -367,13 +367,13 @@ function render(d){
   }
 
   /* program wind-down — this was the final cycle (no next cycle) */
-  var endedHTML = '<details class="settle applied dd"><summary class="title">व्योम की तरफ़ से यह प्रोग्राम अब बंद हो गया है'+CHEV+'</summary>'+
+  var endedHTML = '<div class="settle applied"><div class="title">व्योम की तरफ़ से यह प्रोग्राम अब बंद हो गया है</div>'+
     '<div class="bd">'+(m.kase === 'unenrolled'
       ? '16 अगस्त–15 सितंबर की यह साइकिल इस प्रोग्राम की <b>आख़िरी साइकिल</b> थी. आगे कोई नई साइकिल नहीं है.'
       : m.won
         ? '16 अगस्त–15 सितंबर की यह साइकिल इस प्रोग्राम की <b>आख़िरी साइकिल</b> थी — और आपने इसे जीत कर बंद किया 🎉. ऊपर दिखा <b>₹'+inr(amt)+'</b> आपकी आख़िरी सेहत गारंटी है, '+payLine+'. आगे कोई नई साइकिल नहीं है.'
         : '16 अगस्त–15 सितंबर की यह साइकिल इस प्रोग्राम की <b>आख़िरी साइकिल</b> थी. इस बार गारंटी नहीं बनी, पर <b>कोई कटौती नहीं</b> — इंस्टॉल और सर्विस की कमाई पूरी आपकी. आगे कोई नई साइकिल नहीं है.')+
-    '<br><br>आपकी मेहनत के लिए शुक्रिया 🙏 नेटवर्क अच्छा रखिए — वही आपके ग्राहक और कमाई बनाए रखता है.</div></details>';
+    '<br><br>आपकी मेहनत के लिए शुक्रिया 🙏 नेटवर्क अच्छा रखिए — वही आपके ग्राहक और कमाई बनाए रखता है.</div></div>';
 
   document.getElementById('body').innerHTML =
     heroHTML + standHTML + prorataHTML + settleHTML + endedHTML;
