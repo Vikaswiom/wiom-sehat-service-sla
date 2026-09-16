@@ -261,7 +261,7 @@ function render(d){
   if (m.kase === 'unenrolled'){
     heroHTML = '<div class="card"><div class="k">इस आख़िरी साइकिल का सेहत बोनस</div>'+
       '<div class="earn-amt">₹0</div>'+
-      '<div class="earn-sub mut">आप इस साइकिल की फ़ाइनल एलिजिबल लिस्ट में नहीं थे — कोई कटौती नहीं</div></div>';
+      '<div class="earn-sub mut">आपका '+metric+' 80% से कम रहा — कोई कटौती नहीं</div></div>';
   } else if (m.won){
     heroHTML = '<div class="card"><div class="k">आपकी आख़िरी सेहत गारंटी</div>'+
       '<div class="earn-amt">₹'+inr(amt)+'</div>'+
@@ -323,9 +323,9 @@ function render(d){
       rows:[[gateLab, pct+'%'], ['चाहिए था','80% या ऊपर'],
             ['सेहत बोनस — इस साइकिल','₹0',' total']]};
   } else if (m.kase === 'unenrolled'){
-    s = {tone:'applied', ph:'🛡 साइकिल का हिसाब', title:'इस साइकिल की एलिजिबल लिस्ट में नहीं',
-      body:'सेहत गारंटी की इस आख़िरी साइकिल (16 अगस्त–15 सितंबर) की फ़ाइनल एलिजिबल लिस्ट में ये आईडी नहीं थी — इसलिए इस बार सेहत बोनस नहीं बना. <b>कोई कटौती नहीं</b>: इंस्टॉल और सर्विस की कमाई पूरी आपकी.',
-      rows:[['इस साइकिल','एलिजिबल नहीं'], ['सेहत बोनस','₹0',' total']]};
+    s = {tone:'applied', title:'इस साइकिल 80% नहीं हो पाया',
+      body:'आपका '+metric+' इस साइकिल <b>80% से कम</b> रहा — इसलिए इस बार सेहत बोनस नहीं बना. <b>कोई कटौती नहीं</b>: इंस्टॉल और सर्विस की कमाई पूरी आपकी.',
+      rows:[[metric, '80% से कम'], ['सेहत बोनस','₹0',' total']]};
   } else if (m.kase === 'pass'){
     s = {tone:'ok', ph:'🛡 साइकिल का हिसाब', title:'बधाई हो — ₹'+inr(PRIZE)+' पक्का 🎉',
       body:'आपने अपना '+metric+' <b>80% पार</b> रखा — वही एक शर्त थी. ₹'+inr(PRIZE)+' '+payLine+'. फ़ाइनल पेआउट रन से कन्फर्म होता है.',
@@ -350,7 +350,7 @@ function render(d){
   var fineHTML = m.kase === 'unenrolled' ? '' : '<div class="sb">साफ़ बात</div><div class="li">'+
     '· ये ₹'+inr(PRIZE)+' आपकी इंस्टॉल और सर्विस की कमाई के <b>ऊपर</b> है<br>'+
     '· 80% न होने पर कोई कटौती नहीं — बस बोनस नहीं बनता</div>';
-  var settleHTML = '<div class="settle '+s.tone+'"><div class="ph">'+s.ph+'</div>'+
+  var settleHTML = '<div class="settle '+s.tone+'">'+
     '<div class="title">'+s.title+'</div><div class="bd">'+s.body+'</div>'+
     rowsHTML(s.rows)+fineHTML+'</div>';
 
