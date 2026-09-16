@@ -312,7 +312,7 @@ function render(d){
   if (m.kase === 'unenrolled'){
     heroHTML = '';
   } else if (m.won){
-    heroHTML = '<div class="card"><div class="k">इस साइकिल की सेहत गारंटी</div>'+
+    heroHTML = '<div class="card"><div class="k">आपकी आख़िरी सेहत गारंटी</div>'+
       '<div class="earn-amt">₹'+inr(amt)+'</div>'+
       '<div class="earn-sub">'+payLine+(R && R.amt < PRIZE ? ' · '+R.d+'/31 दिन के हिसाब से' : ' · install-service कमाई के ऊपर')+'</div></div>';
   } else {
@@ -357,24 +357,23 @@ function render(d){
   } else if (m.kase === 'door'){
     s = {tone:'na', ph:'🛡 साइकिल का हिसाब',
       title: m.gap <= 5 ? 'बस '+m.gap+'% रह गया' : 'इस बार 80% नहीं हो पाया',
-      body:'आपका '+gateLab+' <b>'+pct+'%</b> पर बंद हुआ — दरवाज़े तक पहुँचे. कोई कटौती नहीं: install और service की कमाई पूरी आपकी. नई साइकिल आज से — यही मेहनत अगली बार ₹'+inr(PRIZE)+' बना देगी.',
+      body:'आपका '+gateLab+' <b>'+pct+'%</b> पर बंद हुआ — दरवाज़े तक पहुँचे. कोई कटौती नहीं: install और service की कमाई पूरी आपकी.',
       rows:[[gateLab, pct+'%'], ['चाहिए था','80% या ऊपर'],
             ['सेहत bonus — इस साइकिल','₹0',' total']]};
   } else if (m.kase === 'improved'){
     s = {tone:'na', ph:'🛡 साइकिल का हिसाब', title:'80% नहीं — पर आप '+(mv>0?'+'+fmtOff(mv)+' ':'')+'सुधरे 📈',
-      body:'नंबर सही दिशा में है ('+mvLine+'). इस साइकिल bonus नहीं बना, पर <b>कोई कटौती भी नहीं</b> — और यही रफ़्तार रही तो अगली साइकिल ₹'+inr(PRIZE)+' आपका है.',
+      body:'नंबर सही दिशा में है ('+mvLine+'). इस साइकिल bonus नहीं बना, पर <b>कोई कटौती भी नहीं</b>.',
       rows:[[gateLab, pct+'%'], ['चाहिए था','80% या ऊपर'],
             ['सेहत bonus — इस साइकिल','₹0',' total']]};
   } else if (m.kase === 'held'){
     s = {tone:'na', ph:'🛡 साइकिल का हिसाब', title:'इस साइकिल 80% नहीं हो पाया',
-      body:'आपका '+gateLab+' <b>'+pct+'%</b> पर बंद हुआ. साफ़ बात: इस साइकिल सेहत bonus नहीं बना — पर <b>कोई कटौती भी नहीं</b>, install और service की कमाई पूरी आपकी. नई साइकिल आज से शुरू है, गिनती फिर 0 से.',
+      body:'आपका '+gateLab+' <b>'+pct+'%</b> पर बंद हुआ. साफ़ बात: इस साइकिल सेहत bonus नहीं बना — पर <b>कोई कटौती भी नहीं</b>, install और service की कमाई पूरी आपकी.',
       rows:[[gateLab, pct+'%'], ['चाहिए था','80% या ऊपर'],
             ['सेहत bonus — इस साइकिल','₹0',' total']]};
   } else if (m.kase === 'unenrolled'){
     s = {tone:'applied', ph:'🛡 साइकिल का हिसाब', title:'आप इस साइकिल शामिल नहीं थे',
-      body:'ये हिसाब सिर्फ़ enrolled CSPs का बनता है — इस साइकिल की list में ये ID नहीं थी. अगली साइकिल का हिस्सा बनने के लिए app में <b>सेहत गारंटी</b> पर sign-up कीजिए, या helpline पर पूछिए.',
-      rows:[['इस साइकिल','enrolled नहीं'],
-            ['अगली साइकिल की गारंटी','₹'+inr(PRIZE),' total']]};
+      body:'ये हिसाब सिर्फ़ enrolled CSPs का बनता है — इस साइकिल की list में ये ID नहीं थी. सेहत गारंटी program अब पूरा हो चुका है.',
+      rows:[['इस साइकिल','enrolled नहीं']]};
   } else if (m.kase === 'pass'){
     s = {tone:'ok', ph:'🛡 साइकिल का हिसाब', title:'बधाई हो — ₹'+inr(PRIZE)+' पक्का 🎉',
       body:'आपने अपना '+metric+' <b>80% पार</b> रखा — वही एक शर्त थी. ₹'+inr(PRIZE)+' '+payLine+'. Final payout run से confirm होता है.',
@@ -387,19 +386,18 @@ function render(d){
             ['सेहत गारंटी — वॉलेट में','₹'+inr(PRIZE),' total']]};
   } else if (m.kase === 'near'){
     s = {tone:'na', ph:'🛡 साइकिल का हिसाब', title:'बस '+m.gap+'% रह गया',
-      body:'आपका '+metric+' <b>'+pct+'%</b> पर बंद हुआ — 80% से ज़रा-सा नीचे. कोई कटौती नहीं: install और service की कमाई पूरी आपकी. नई साइकिल आज से — यही मेहनत अगली बार ₹'+inr(PRIZE)+' बना देगी.',
+      body:'आपका '+metric+' <b>'+pct+'%</b> पर बंद हुआ — 80% से ज़रा-सा नीचे. कोई कटौती नहीं: install और service की कमाई पूरी आपकी.',
       rows:[[metric, pct+'%'], ['चाहिए था','80% या ऊपर'],
             ['सेहत bonus — इस साइकिल','₹0',' total']]};
   } else {
     s = {tone:'na', ph:'🛡 साइकिल का हिसाब', title:'इस साइकिल 80% नहीं हो पाया',
-      body:'आपका '+metric+' <b>'+pct+'%</b> पर बंद हुआ. साफ़ बात: इस साइकिल सेहत bonus नहीं बना — पर <b>कोई कटौती भी नहीं</b>, install और service की कमाई पूरी आपकी. नई साइकिल आज से शुरू है, गिनती फिर 0 से.',
+      body:'आपका '+metric+' <b>'+pct+'%</b> पर बंद हुआ. साफ़ बात: इस साइकिल सेहत bonus नहीं बना — पर <b>कोई कटौती भी नहीं</b>, install और service की कमाई पूरी आपकी.',
       rows:[[metric, pct+'%'], ['चाहिए था','80% या ऊपर'],
             ['सेहत bonus — इस साइकिल','₹0',' total']]};
   }
   var fineHTML = m.kase === 'unenrolled' ? '' : '<div class="sb">साफ़ बात</div><div class="li">'+
     '· ये ₹'+inr(PRIZE)+' आपकी install और service की कमाई के <b>ऊपर</b> है<br>'+
-    '· 80% न होने पर कोई कटौती नहीं — बस bonus नहीं बनता<br>'+
-    '· हर साइकिल नई गिनती, नया मौका</div>';
+    '· 80% न होने पर कोई कटौती नहीं — बस bonus नहीं बनता</div>';
   var settleHTML = '<div class="settle '+s.tone+'"><div class="ph">'+s.ph+'</div>'+
     '<div class="title">'+s.title+'</div><div class="bd">'+s.body+'</div>'+
     rowsHTML(s.rows)+fineHTML+'</div>';
@@ -411,22 +409,21 @@ function render(d){
       rowsHTML([['पूरी साइकिल की गारंटी','₹'+inr(PRIZE)],
                 ['आपके दिन — '+R.j+' को जुड़े', R.d+' / 31'],
                 ['आपकी इस साइकिल की गारंटी','₹'+inr(R.amt),' total']])+
-      '<div class="days-next">नई साइकिल में आप पहले दिन से हैं — 80% रखिए, पूरे ₹'+inr(PRIZE)+' मिलेंगे.</div></div>';
+      '</div>';
   }
 
-  /* next cycle — already running */
-  var dailyUrl = DAILY[A ? 'A' : 'B'] + (d.id ? '?cspId=' + encodeURIComponent(d.id) : '');
-  var nextHTML = '<div class="settle days"><div class="ph">🗓️ नई साइकिल शुरू हो चुकी है</div>'+
-    rowsHTML([['साइकिल', fmtD(c.ns)+' – '+fmtD(c.ne)],
-              ['वही एक शर्त','80% या ऊपर'],
-              ['गारंटी','₹'+inr(PRIZE),' total']])+
-    '<div class="days-next">'+(m.kase === 'unenrolled'
-      ? 'शामिल होते ही रोज़ का checkup और साइकिल का हिसाब यहीं दिखेगा.'
-      : 'रोज़ का checkup app में देखते रहिए — सुधार वहीं दिखता है.')+'</div>'+
-    '<a class="dlbtn" href="'+dailyUrl+'">अपनी आज की सेहत देखें →</a></div>';
+  /* program wind-down — this was the final cycle (no next cycle) */
+  var endedHTML = '<div class="settle applied"><div class="ph">🏁 सेहत गारंटी अब पूरी हुई</div>'+
+    '<div class="title">व्योम की तरफ़ से यह program अब बंद हो गया है</div>'+
+    '<div class="bd">'+(m.kase === 'unenrolled'
+      ? '16 अगस्त–15 सितंबर की यह साइकिल इस program की <b>आख़िरी साइकिल</b> थी. आगे कोई नई साइकिल नहीं है.'
+      : m.won
+        ? '16 अगस्त–15 सितंबर की यह साइकिल इस program की <b>आख़िरी साइकिल</b> थी — और आपने इसे जीत कर बंद किया 🎉. ऊपर दिखा <b>₹'+inr(amt)+'</b> आपकी आख़िरी सेहत गारंटी है, '+payLine+'. आगे कोई नई साइकिल नहीं है.'
+        : '16 अगस्त–15 सितंबर की यह साइकिल इस program की <b>आख़िरी साइकिल</b> थी. इस बार गारंटी नहीं बनी, पर <b>कोई कटौती नहीं</b> — install और service की कमाई पूरी आपकी. आगे कोई नई साइकिल नहीं है.')+
+    '<br><br>आपकी मेहनत के लिए शुक्रिया 🙏 नेटवर्क अच्छा रखिए — वही आपके ग्राहक और कमाई बनाए रखता है.</div></div>';
 
   document.getElementById('body').innerHTML =
-    heroHTML + standHTML + settleHTML + prorataHTML + nextHTML;
+    heroHTML + standHTML + settleHTML + prorataHTML + endedHTML;
 
   try{
     var ev = 'Sehat_Settle_' + m.tr + '_' + m.kase;
