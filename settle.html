@@ -60,6 +60,12 @@ html,body{background:var(--screen);overflow-x:hidden;}
 /* नई-साइकिल card */
 .settle.days{background:#F1EEF6;border-color:var(--stroke2);}
 .settle.days .ph,.settle.days .title{color:var(--maroon);} .settle.days .row.total .amt{color:var(--maroon);}
+.settle.ended{padding:0;overflow:hidden;}
+.settle.ended>summary{list-style:none;cursor:pointer;padding:14px 15px;display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:15px;font-weight:800;color:var(--purple);line-height:1.35;letter-spacing:-.3px;margin:0;}
+.settle.ended>summary::-webkit-details-marker{display:none;}
+.settle.ended>summary .chev{flex:none;font-size:14px;line-height:1;transition:transform .2s;}
+.settle.ended[open]>summary .chev{transform:rotate(180deg);}
+.settle.ended>.bd{padding:0 15px 15px;color:var(--text);}
 .days-next{font-size:11.5px;color:var(--purple);font-weight:700;line-height:1.5;margin-top:11px;}
 .dlbtn{display:block;width:100%;margin:11px 0 0;padding:13px 14px;border:none;border-radius:12px;background:var(--purple);
   color:#fff;text-align:center;text-decoration:none;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;
@@ -359,14 +365,13 @@ function render(d){
   }
 
   /* program wind-down — this was the final cycle (no next cycle) */
-  var endedHTML = '<div class="settle applied"><div class="ph">🏁 सेहत गारंटी अब पूरी हुई</div>'+
-    '<div class="title">व्योम की तरफ़ से यह program अब बंद हो गया है</div>'+
+  var endedHTML = '<details class="settle applied ended"><summary class="title">व्योम की तरफ़ से यह प्रोग्राम अब बंद हो गया है<span class="chev">▾</span></summary>'+
     '<div class="bd">'+(m.kase === 'unenrolled'
-      ? '16 अगस्त–15 सितंबर की यह साइकिल इस program की <b>आख़िरी साइकिल</b> थी. आगे कोई नई साइकिल नहीं है.'
+      ? '16 अगस्त–15 सितंबर की यह साइकिल इस प्रोग्राम की <b>आख़िरी साइकिल</b> थी. आगे कोई नई साइकिल नहीं है.'
       : m.won
-        ? '16 अगस्त–15 सितंबर की यह साइकिल इस program की <b>आख़िरी साइकिल</b> थी — और आपने इसे जीत कर बंद किया 🎉. ऊपर दिखा <b>₹'+inr(amt)+'</b> आपकी आख़िरी सेहत गारंटी है, '+payLine+'. आगे कोई नई साइकिल नहीं है.'
-        : '16 अगस्त–15 सितंबर की यह साइकिल इस program की <b>आख़िरी साइकिल</b> थी. इस बार गारंटी नहीं बनी, पर <b>कोई कटौती नहीं</b> — install और service की कमाई पूरी आपकी. आगे कोई नई साइकिल नहीं है.')+
-    '<br><br>आपकी मेहनत के लिए शुक्रिया 🙏 नेटवर्क अच्छा रखिए — वही आपके ग्राहक और कमाई बनाए रखता है.</div></div>';
+        ? '16 अगस्त–15 सितंबर की यह साइकिल इस प्रोग्राम की <b>आख़िरी साइकिल</b> थी — और आपने इसे जीत कर बंद किया 🎉. ऊपर दिखा <b>₹'+inr(amt)+'</b> आपकी आख़िरी सेहत गारंटी है, '+payLine+'. आगे कोई नई साइकिल नहीं है.'
+        : '16 अगस्त–15 सितंबर की यह साइकिल इस प्रोग्राम की <b>आख़िरी साइकिल</b> थी. इस बार गारंटी नहीं बनी, पर <b>कोई कटौती नहीं</b> — install और service की कमाई पूरी आपकी. आगे कोई नई साइकिल नहीं है.')+
+    '<br><br>आपकी मेहनत के लिए शुक्रिया 🙏 नेटवर्क अच्छा रखिए — वही आपके ग्राहक और कमाई बनाए रखता है.</div></details>';
 
   document.getElementById('body').innerHTML =
     heroHTML + standHTML + settleHTML + prorataHTML + endedHTML;
