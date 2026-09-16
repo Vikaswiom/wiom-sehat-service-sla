@@ -252,35 +252,35 @@ function render(d){
 
   if (m.kase === 'nodata'){
     document.getElementById('body').innerHTML =
-      '<div class="skel">इस साइकिल आपके नेटवर्क से telemetry नहीं मिली,<br>इसलिए हिसाब अभी तैयार नहीं है.<br>Helpline पर call कीजिए.</div>';
+      '<div class="skel">इस साइकिल आपके नेटवर्क से टेलीमेट्री नहीं मिली,<br>इसलिए हिसाब अभी तैयार नहीं है.<br>हेल्पलाइन पर कॉल कीजिए.</div>';
     return;
   }
 
   /* hero — what landed in the wallet */
   var heroHTML;
   if (m.kase === 'unenrolled'){
-    heroHTML = '<div class="card"><div class="k">इस आख़िरी साइकिल का सेहत bonus</div>'+
+    heroHTML = '<div class="card"><div class="k">इस आख़िरी साइकिल का सेहत बोनस</div>'+
       '<div class="earn-amt">₹0</div>'+
-      '<div class="earn-sub mut">आप इस साइकिल की final eligible list में नहीं थे — कोई कटौती नहीं</div></div>';
+      '<div class="earn-sub mut">आप इस साइकिल की फ़ाइनल एलिजिबल लिस्ट में नहीं थे — कोई कटौती नहीं</div></div>';
   } else if (m.won){
     heroHTML = '<div class="card"><div class="k">आपकी आख़िरी सेहत गारंटी</div>'+
       '<div class="earn-amt">₹'+inr(amt)+'</div>'+
-      '<div class="earn-sub">'+payLine+(R && R.amt < PRIZE ? ' · '+R.d+'/31 दिन के हिसाब से' : ' · install-service कमाई के ऊपर')+'</div></div>';
+      '<div class="earn-sub">'+payLine+(R && R.amt < PRIZE ? ' · '+R.d+'/31 दिन के हिसाब से' : ' · इंस्टॉल-सर्विस कमाई के ऊपर')+'</div></div>';
   } else {
-    heroHTML = '<div class="card"><div class="k">इस साइकिल का सेहत bonus</div>'+
+    heroHTML = '<div class="card"><div class="k">इस साइकिल का सेहत बोनस</div>'+
       '<div class="earn-amt">₹0</div>'+
-      '<div class="earn-sub mut">कोई कटौती नहीं — install और service की कमाई पूरी आपकी</div></div>';
+      '<div class="earn-sub mut">कोई कटौती नहीं — इंस्टॉल और सर्विस की कमाई पूरी आपकी</div></div>';
   }
 
   /* standing — the number the gate used (official) or the rolling estimate */
   var gateLab = m.official && !A && R.ic != null ? 'समय पर समाधान — साइकिल में आई शिकायतों पर' : metric;
   var basis = m.official
-    ? gateLab + ' · final हिसाब की reading' +
+    ? gateLab + ' · फ़ाइनल हिसाब की रीडिंग' +
       (!A && R.ic != null && R.r < TARGET && R.amt > 0 ? '<br>रोज़ वाला 60-दिन का नंबर ('+fmtOff(R.r)+'%) अलग दिखता था — गिनती साइकिल की शिकायतों की हुई' : '') +
       (mvLine ? '<br>' + mvLine : '')
-    : (A ? (d.all ? inr(d.all)+' ping में से '+inr(d.ok)+' सही = '+pct+'% · आख़िरी 15 दिन का औसत' : '')
+    : (A ? (d.all ? inr(d.all)+' पिंग में से '+inr(d.ok)+' सही = '+pct+'% · आख़िरी 15 दिन का औसत' : '')
          : (d.stot ? d.stot+' शिकायत · '+d.sok+' समय से बंद, '+((d.stot||0)-(d.sok||0))+' देर से = '+pct+'%'
-                   : 'पूरी साइकिल में एक भी service शिकायत नहीं आई'));
+                   : 'पूरी साइकिल में एक भी सर्विस शिकायत नहीं आई'));
   var need = m.val == null            ? 'गिनने को शिकायत ही नहीं थी'
            : m.won                    ? '✓ 80% पार — वादा पूरा'
            : m.kase === 'unenrolled'  ? 'ये सिर्फ़ आपकी जानकारी के लिए है'
@@ -303,53 +303,53 @@ function render(d){
   var amtS = '₹'+inr(amt);
   if (m.kase === 'paid'){
     s = {tone:'ok', ph:'🛡 साइकिल का हिसाब', title:'बधाई हो — '+amtS+' पक्का 🎉',
-      body:'आपने '+gateLab+' <b>80% पार</b> रखा — final reading <b>'+pct+'%</b>. '+amtS+' '+payLine+'.',
-      rows:[[gateLab+' — final', pct+'%'], ['शर्त — 80% या ऊपर','✓ पूरा'],
+      body:'आपने '+gateLab+' <b>80% पार</b> रखा — फ़ाइनल रीडिंग <b>'+pct+'%</b>. '+amtS+' '+payLine+'.',
+      rows:[[gateLab+' — फ़ाइनल', pct+'%'], ['शर्त — 80% या ऊपर','✓ पूरा'],
             ['सेहत गारंटी — वॉलेट में', amtS,' total']]};
   } else if (m.kase === 'door'){
     s = {tone:'na', ph:'🛡 साइकिल का हिसाब',
       title: m.gap <= 5 ? 'बस '+m.gap+'% रह गया' : 'इस बार 80% नहीं हो पाया',
-      body:'आपका '+gateLab+' <b>'+pct+'%</b> पर बंद हुआ — दरवाज़े तक पहुँचे. कोई कटौती नहीं: install और service की कमाई पूरी आपकी.',
+      body:'आपका '+gateLab+' <b>'+pct+'%</b> पर बंद हुआ — दरवाज़े तक पहुँचे. कोई कटौती नहीं: इंस्टॉल और सर्विस की कमाई पूरी आपकी.',
       rows:[[gateLab, pct+'%'], ['चाहिए था','80% या ऊपर'],
-            ['सेहत bonus — इस साइकिल','₹0',' total']]};
+            ['सेहत बोनस — इस साइकिल','₹0',' total']]};
   } else if (m.kase === 'improved'){
     s = {tone:'na', ph:'🛡 साइकिल का हिसाब', title:'80% नहीं — पर आप '+(mv>0?'+'+fmtOff(mv)+' ':'')+'सुधरे 📈',
-      body:'नंबर सही दिशा में है ('+mvLine+'). इस साइकिल bonus नहीं बना, पर <b>कोई कटौती भी नहीं</b>.',
+      body:'नंबर सही दिशा में है ('+mvLine+'). इस साइकिल बोनस नहीं बना, पर <b>कोई कटौती भी नहीं</b>.',
       rows:[[gateLab, pct+'%'], ['चाहिए था','80% या ऊपर'],
-            ['सेहत bonus — इस साइकिल','₹0',' total']]};
+            ['सेहत बोनस — इस साइकिल','₹0',' total']]};
   } else if (m.kase === 'held'){
     s = {tone:'na', ph:'🛡 साइकिल का हिसाब', title:'इस साइकिल 80% नहीं हो पाया',
-      body:'आपका '+gateLab+' <b>'+pct+'%</b> पर बंद हुआ. साफ़ बात: इस साइकिल सेहत bonus नहीं बना — पर <b>कोई कटौती भी नहीं</b>, install और service की कमाई पूरी आपकी.',
+      body:'आपका '+gateLab+' <b>'+pct+'%</b> पर बंद हुआ. साफ़ बात: इस साइकिल सेहत बोनस नहीं बना — पर <b>कोई कटौती भी नहीं</b>, इंस्टॉल और सर्विस की कमाई पूरी आपकी.',
       rows:[[gateLab, pct+'%'], ['चाहिए था','80% या ऊपर'],
-            ['सेहत bonus — इस साइकिल','₹0',' total']]};
+            ['सेहत बोनस — इस साइकिल','₹0',' total']]};
   } else if (m.kase === 'unenrolled'){
-    s = {tone:'applied', ph:'🛡 साइकिल का हिसाब', title:'इस साइकिल की eligible list में नहीं',
-      body:'सेहत गारंटी की इस आख़िरी साइकिल (16 अगस्त–15 सितंबर) की final eligible list में ये ID नहीं थी — इसलिए इस बार सेहत bonus नहीं बना. <b>कोई कटौती नहीं</b>: install और service की कमाई पूरी आपकी.',
-      rows:[['इस साइकिल','eligible नहीं'], ['सेहत bonus','₹0',' total']]};
+    s = {tone:'applied', ph:'🛡 साइकिल का हिसाब', title:'इस साइकिल की एलिजिबल लिस्ट में नहीं',
+      body:'सेहत गारंटी की इस आख़िरी साइकिल (16 अगस्त–15 सितंबर) की फ़ाइनल एलिजिबल लिस्ट में ये आईडी नहीं थी — इसलिए इस बार सेहत बोनस नहीं बना. <b>कोई कटौती नहीं</b>: इंस्टॉल और सर्विस की कमाई पूरी आपकी.',
+      rows:[['इस साइकिल','एलिजिबल नहीं'], ['सेहत बोनस','₹0',' total']]};
   } else if (m.kase === 'pass'){
     s = {tone:'ok', ph:'🛡 साइकिल का हिसाब', title:'बधाई हो — ₹'+inr(PRIZE)+' पक्का 🎉',
-      body:'आपने अपना '+metric+' <b>80% पार</b> रखा — वही एक शर्त थी. ₹'+inr(PRIZE)+' '+payLine+'. Final payout run से confirm होता है.',
+      body:'आपने अपना '+metric+' <b>80% पार</b> रखा — वही एक शर्त थी. ₹'+inr(PRIZE)+' '+payLine+'. फ़ाइनल पेआउट रन से कन्फर्म होता है.',
       rows:[[metric, pct+'%'], ['शर्त — 80% या ऊपर','✓ पूरा'],
             ['सेहत गारंटी — वॉलेट में','₹'+inr(PRIZE),' total']]};
   } else if (m.kase === 'none'){
     s = {tone:'applied', ph:'🛡 साइकिल का हिसाब', title:'एक भी शिकायत नहीं — गारंटी बनी रही',
-      body:'इस साइकिल आपके नेटवर्क से <b>कोई service शिकायत आई ही नहीं</b> — गिनने को कुछ था ही नहीं, और साफ़ सेवा पर गारंटी टूटती नहीं. ₹'+inr(PRIZE)+' '+payLine+'. Final payout run से confirm होता है.',
+      body:'इस साइकिल आपके नेटवर्क से <b>कोई सर्विस शिकायत आई ही नहीं</b> — गिनने को कुछ था ही नहीं, और साफ़ सेवा पर गारंटी टूटती नहीं. ₹'+inr(PRIZE)+' '+payLine+'. फ़ाइनल पेआउट रन से कन्फर्म होता है.',
       rows:[['शिकायतें इस साइकिल','0'],
             ['सेहत गारंटी — वॉलेट में','₹'+inr(PRIZE),' total']]};
   } else if (m.kase === 'near'){
     s = {tone:'na', ph:'🛡 साइकिल का हिसाब', title:'बस '+m.gap+'% रह गया',
-      body:'आपका '+metric+' <b>'+pct+'%</b> पर बंद हुआ — 80% से ज़रा-सा नीचे. कोई कटौती नहीं: install और service की कमाई पूरी आपकी.',
+      body:'आपका '+metric+' <b>'+pct+'%</b> पर बंद हुआ — 80% से ज़रा-सा नीचे. कोई कटौती नहीं: इंस्टॉल और सर्विस की कमाई पूरी आपकी.',
       rows:[[metric, pct+'%'], ['चाहिए था','80% या ऊपर'],
-            ['सेहत bonus — इस साइकिल','₹0',' total']]};
+            ['सेहत बोनस — इस साइकिल','₹0',' total']]};
   } else {
     s = {tone:'na', ph:'🛡 साइकिल का हिसाब', title:'इस साइकिल 80% नहीं हो पाया',
-      body:'आपका '+metric+' <b>'+pct+'%</b> पर बंद हुआ. साफ़ बात: इस साइकिल सेहत bonus नहीं बना — पर <b>कोई कटौती भी नहीं</b>, install और service की कमाई पूरी आपकी.',
+      body:'आपका '+metric+' <b>'+pct+'%</b> पर बंद हुआ. साफ़ बात: इस साइकिल सेहत बोनस नहीं बना — पर <b>कोई कटौती भी नहीं</b>, इंस्टॉल और सर्विस की कमाई पूरी आपकी.',
       rows:[[metric, pct+'%'], ['चाहिए था','80% या ऊपर'],
-            ['सेहत bonus — इस साइकिल','₹0',' total']]};
+            ['सेहत बोनस — इस साइकिल','₹0',' total']]};
   }
   var fineHTML = m.kase === 'unenrolled' ? '' : '<div class="sb">साफ़ बात</div><div class="li">'+
-    '· ये ₹'+inr(PRIZE)+' आपकी install और service की कमाई के <b>ऊपर</b> है<br>'+
-    '· 80% न होने पर कोई कटौती नहीं — बस bonus नहीं बनता</div>';
+    '· ये ₹'+inr(PRIZE)+' आपकी इंस्टॉल और सर्विस की कमाई के <b>ऊपर</b> है<br>'+
+    '· 80% न होने पर कोई कटौती नहीं — बस बोनस नहीं बनता</div>';
   var settleHTML = '<div class="settle '+s.tone+'"><div class="ph">'+s.ph+'</div>'+
     '<div class="title">'+s.title+'</div><div class="bd">'+s.body+'</div>'+
     rowsHTML(s.rows)+fineHTML+'</div>';
@@ -370,7 +370,7 @@ function render(d){
       ? '16 अगस्त–15 सितंबर की यह साइकिल इस प्रोग्राम की <b>आख़िरी साइकिल</b> थी. आगे कोई नई साइकिल नहीं है.'
       : m.won
         ? '16 अगस्त–15 सितंबर की यह साइकिल इस प्रोग्राम की <b>आख़िरी साइकिल</b> थी — और आपने इसे जीत कर बंद किया 🎉. ऊपर दिखा <b>₹'+inr(amt)+'</b> आपकी आख़िरी सेहत गारंटी है, '+payLine+'. आगे कोई नई साइकिल नहीं है.'
-        : '16 अगस्त–15 सितंबर की यह साइकिल इस प्रोग्राम की <b>आख़िरी साइकिल</b> थी. इस बार गारंटी नहीं बनी, पर <b>कोई कटौती नहीं</b> — install और service की कमाई पूरी आपकी. आगे कोई नई साइकिल नहीं है.')+
+        : '16 अगस्त–15 सितंबर की यह साइकिल इस प्रोग्राम की <b>आख़िरी साइकिल</b> थी. इस बार गारंटी नहीं बनी, पर <b>कोई कटौती नहीं</b> — इंस्टॉल और सर्विस की कमाई पूरी आपकी. आगे कोई नई साइकिल नहीं है.')+
     '<br><br>आपकी मेहनत के लिए शुक्रिया 🙏 नेटवर्क अच्छा रखिए — वही आपके ग्राहक और कमाई बनाए रखता है.</div></details>';
 
   document.getElementById('body').innerHTML =
@@ -407,13 +407,13 @@ async function getCsp(){
 
 /* ── demo (preview every case) — shows with ?demo=1 or no cspId ── */
 var DEMO = {
-  paidfull:{label:'1 · Optical 80.6% — पूरे ₹10,000', rec:{c:'A',g:1,e:74.7,r:80.6,amt:10000,j:'16 जुलाई',d:31}},
+  paidfull:{label:'1 · ऑप्टिकल 80.6% — पूरे ₹10,000', rec:{c:'A',g:1,e:74.7,r:80.6,amt:10000,j:'16 जुलाई',d:31}},
   paidpro :{label:'2 · जुड़े 17 जुलाई — ₹9,677 (30/31 दिन)', rec:{c:'A',g:1,e:80.1,r:97.7,amt:9677,j:'17 जुलाई',d:30}},
-  paidic  :{label:'3 · साइकिल-SLA 84.6% से जीते (rolling 41.5%)', rec:{c:'B',g:1,e:46.2,r:41.5,ic:84.6,amt:10000,j:'16 जुलाई',d:31}},
+  paidic  :{label:'3 · साइकिल-एसएलए 84.6% से जीते (रोलिंग 41.5%)', rec:{c:'B',g:1,e:46.2,r:41.5,ic:84.6,amt:10000,j:'16 जुलाई',d:31}},
   door    :{label:'4 · दरवाज़े पर — 79.2%, ₹0', rec:{c:'A',g:3,e:76.9,r:79.2}},
-  improved:{label:'5 · +30 pts सुधरे — अभी ₹0', rec:{c:'A',g:4,e:31.1,r:61.3}},
+  improved:{label:'5 · +30 पॉइंट्स सुधरे — अभी ₹0', rec:{c:'A',g:4,e:31.1,r:61.3}},
   held    :{label:'6 · 80% नहीं — ₹0', rec:{c:'B',g:5,e:70,r:66.7,ic:50}},
-  unenr   :{label:'7 · enrolled नहीं थे', rec:null, tr:'B', sok:50, stot:55, id:'demo0x'}
+  unenr   :{label:'7 · एनरोल्ड नहीं थे', rec:null, tr:'B', sok:50, stot:55, id:'demo0x'}
 };
 function mountDemo(){
   var el = document.getElementById('demo'); el.hidden = false;
@@ -426,7 +426,7 @@ function mountDemo(){
     el.appendChild(b);
   });
   var n = document.createElement('div'); n.className = 'note';
-  n.textContent = 'हर enrolled CSP इनमें से एक पर बंद होता है';
+  n.textContent = 'हर एनरोल्ड सीएसपी इनमें से एक पर बंद होता है';
   el.appendChild(n);
   el.querySelector('button').click();
 }
@@ -442,8 +442,8 @@ function mountDemo(){
   if (!d){
     document.getElementById('body').innerHTML =
       '<div class="skel">'+(id
-        ? 'इस साइकिल का हिसाब अभी तैयार नहीं है.<br>App में दोबारा खोलें, या helpline पर call करें.'
-        : 'ये पेज आपकी CSP ID के साथ खुलता है.<br>App में “सेहत गारंटी” पर tap कीजिए.')+'</div>';
+        ? 'इस साइकिल का हिसाब अभी तैयार नहीं है.<br>ऐप में दोबारा खोलें, या हेल्पलाइन पर कॉल करें.'
+        : 'ये पेज आपकी सीएसपी आईडी के साथ खुलता है.<br>ऐप में “सेहत गारंटी” पर टैप कीजिए.')+'</div>';
     return;
   }
   render(d);
