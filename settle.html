@@ -109,6 +109,20 @@ var PROXY_URL = "";
 var DATA_URL  = "https://vikaswiom.github.io/wiom-sehat-mg/data.json";  /* cross-repo fallback */
 var TARGET = 80, SPLIT = 75, PRIZE = 10000;
 var CHEV = '<span class="chev"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></span>';
+
+/* Two-month total earned across BOTH cycles (Aug = 16 Jul–15 Aug · Sept = 16 Aug–15 Sept).
+   s = Sept payout · a = Aug payout · t = total. Shown in the program-ended card. */
+var EARN2M = {
+  /* Track A — Optical Power */
+  a0b8z2:{s:10000,a:9677,t:19677}, a0b7d8:{s:10000,a:9032,t:19032},
+  a0c0g3:{s:10000,a:0,t:10000},    a0c0a4:{s:10000,a:0,t:10000},
+  a0c0f1:{s:10000,a:0,t:10000},    a0b8s8:{s:10000,a:0,t:10000},
+  a0b7h7:{s:10000,a:0,t:10000},    a0b9t8:{s:10000,a:0,t:10000},
+  a0b7e1:{s:10000,a:10000,t:20000},a0b6p4:{s:10000,a:0,t:10000},
+  a0b8z4:{s:0,a:9677,t:9677},      a0b8z3:{s:0,a:9677,t:9677},
+  a0b9v7:{s:0,a:10000,t:10000}
+  /* Track B — Service SLA: to be added */
+};
 var DAILY = {A:'https://vikaswiom.github.io/wiom-sehat-mg/',
              B:'https://vikaswiom.github.io/wiom-sehat-service-sla/'};
 
@@ -367,13 +381,18 @@ function render(d){
   }
 
   /* program wind-down — this was the final cycle (no next cycle) */
+  var e2 = d.id ? EARN2M[d.id] : null;
+  var e2HTML = e2 ? '<div class="sb">दोनों महीनों की कुल सेहत गारंटी</div>'+
+    rowsHTML([['इस साइकिल · 16 अगस्त–15 सितंबर','₹'+inr(e2.s)],
+              ['पिछली साइकिल · 16 जुलाई–15 अगस्त','₹'+inr(e2.a)],
+              ['दोनों महीनों से कुल कमाई','₹'+inr(e2.t),' total']]) : '';
   var endedHTML = '<div class="settle applied"><div class="title">व्योम की तरफ़ से यह प्रोग्राम अब बंद हो गया है</div>'+
     '<div class="bd">'+(m.kase === 'unenrolled'
       ? '16 अगस्त–15 सितंबर की यह साइकिल इस प्रोग्राम की <b>आख़िरी साइकिल</b> थी. आगे कोई नई साइकिल नहीं है.'
       : m.won
         ? '16 अगस्त–15 सितंबर की यह साइकिल इस प्रोग्राम की <b>आख़िरी साइकिल</b> थी — और आपने इसे जीत कर बंद किया 🎉. ऊपर दिखा <b>₹'+inr(amt)+'</b> आपकी आख़िरी सेहत गारंटी है, '+payLine+'. आगे कोई नई साइकिल नहीं है.'
         : '16 अगस्त–15 सितंबर की यह साइकिल इस प्रोग्राम की <b>आख़िरी साइकिल</b> थी. इस बार गारंटी नहीं बनी, पर <b>कोई कटौती नहीं</b> — इंस्टॉल और सर्विस की कमाई पूरी आपकी. आगे कोई नई साइकिल नहीं है.')+
-    '<br><br>आपकी मेहनत के लिए शुक्रिया 🙏 नेटवर्क अच्छा रखिए — वही आपके ग्राहक और कमाई बनाए रखता है.</div></div>';
+    '<br><br>आपकी मेहनत के लिए शुक्रिया 🙏 नेटवर्क अच्छा रखिए — वही आपके ग्राहक और कमाई बनाए रखता है.</div>'+e2HTML+'</div>';
 
   document.getElementById('body').innerHTML =
     heroHTML + standHTML + prorataHTML + settleHTML + endedHTML;
@@ -440,7 +459,7 @@ function mountDemo(){
   if (!id || q.get('demo') === '1'){ mountDemo(); return; }
   var d = await getCsp();
   /* an enrolled CSP renders from the official table even if data.json misses them */
-  if (!d && id && cycle().ce === CYCLE1.ce && CYCLE1.data[id]) d = {id: id};
+  if (!d && id && (CYCLE1.data[id] || EARN2M[id])) d = {id: id};
   if (!d){
     document.getElementById('body').innerHTML =
       '<div class="skel">'+(id
