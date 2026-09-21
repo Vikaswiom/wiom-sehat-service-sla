@@ -114,20 +114,20 @@ var CHEV = '<span class="chev"><svg viewBox="0 0 24 24" fill="currentColor" aria
    s = Sept payout · a = Aug payout · t = total. Shown in the program-ended card. */
 var EARN2M = {
   /* Track A — Optical Power */
-  a0b8z2:{s:10000,a:9677,t:19677}, a0b7d8:{s:10000,a:9032,t:19032},
-  a0c0g3:{s:10000,a:0,t:10000},    a0c0a4:{s:10000,a:0,t:10000},
-  a0c0f1:{s:10000,a:0,t:10000},    a0b8s8:{s:10000,a:0,t:10000},
-  a0b7h7:{s:10000,a:0,t:10000},    a0b9t8:{s:10000,a:0,t:10000},
-  a0b7e1:{s:10000,a:10000,t:20000},a0b6p4:{s:10000,a:0,t:10000},
-  a0b8z4:{s:0,a:9677,t:9677},      a0b8z3:{s:0,a:9677,t:9677},
-  a0b9v7:{s:0,a:10000,t:10000},
+  a0b8z2:{c:'A',s:10000,a:9677,t:19677}, a0b7d8:{c:'A',s:10000,a:9032,t:19032},
+  a0c0g3:{c:'A',s:10000,a:0,t:10000},    a0c0a4:{c:'A',s:10000,a:0,t:10000},
+  a0c0f1:{c:'A',s:10000,a:0,t:10000},    a0b8s8:{c:'A',s:10000,a:0,t:10000},
+  a0b7h7:{c:'A',s:10000,a:0,t:10000},    a0b9t8:{c:'A',s:10000,a:0,t:10000},
+  a0b7e1:{c:'A',s:10000,a:10000,t:20000},a0b6p4:{c:'A',s:10000,a:0,t:10000},
+  a0b8z4:{c:'A',s:0,a:9677,t:9677},      a0b8z3:{c:'A',s:0,a:9677,t:9677},
+  a0b9v7:{c:'A',s:0,a:10000,t:10000},
   /* Track B — Service SLA */
-  a0b5w2:{s:10000,a:10000,t:20000}, a0b6e9:{s:10000,a:10000,t:20000},
-  a0b7g9:{s:10000,a:9677,t:19677},  a0b9h3:{s:10000,a:10000,t:20000},
-  a0b6j9:{s:10000,a:10000,t:20000}, a0c0b8:{s:10000,a:10000,t:20000},
-  a0b6o9:{s:10000,a:10000,t:20000}, a0b9m3:{s:10000,a:9355,t:19355},
-  a0a7g1:{s:10000,a:10000,t:20000}, a0b9z8:{s:10000,a:0,t:10000},
-  a0b8t5:{s:10000,a:0,t:10000},     a0b7b3:{s:0,a:10000,t:10000}
+  a0b5w2:{c:'B',s:10000,a:10000,t:20000}, a0b6e9:{c:'B',s:10000,a:10000,t:20000},
+  a0b7g9:{c:'B',s:10000,a:9677,t:19677},  a0b9h3:{c:'B',s:10000,a:10000,t:20000},
+  a0b6j9:{c:'B',s:10000,a:10000,t:20000}, a0c0b8:{c:'B',s:10000,a:10000,t:20000},
+  a0b6o9:{c:'B',s:10000,a:10000,t:20000}, a0b9m3:{c:'B',s:10000,a:9355,t:19355},
+  a0a7g1:{c:'B',s:10000,a:10000,t:20000}, a0b9z8:{c:'B',s:10000,a:0,t:10000},
+  a0b8t5:{c:'B',s:10000,a:0,t:10000},     a0b7b3:{c:'B',s:0,a:10000,t:10000}
 };
 var DAILY = {A:'https://vikaswiom.github.io/wiom-sehat-mg/',
              B:'https://vikaswiom.github.io/wiom-sehat-service-sla/'};
@@ -230,7 +230,9 @@ function compute(d){
     val  = tr === 'B' && rec.ic != null ? rec.ic : rec.r;    /* the number the gate used */
     kase = rec.amt > 0 ? 'paid' : rec.g === 3 ? 'door' : rec.g === 4 ? 'improved' : 'held';
   } else if (d.rec === undefined && d.id && c.ce === CYCLE1.ce){
-    tr   = d.tr === 'A' || d.tr === 'B' || d.tr === 'U' ? d.tr
+    var e2t = EARN2M[d.id] && EARN2M[d.id].c;               /* official track from the earnings table wins over data.json d.tr */
+    tr   = e2t ? e2t
+         : d.tr === 'A' || d.tr === 'B' || d.tr === 'U' ? d.tr
          : d.op0 != null ? (d.op0 < SPLIT ? 'A' : 'B') : 'U';
     val  = tr === 'A' ? op : sla;
     kase = 'unenrolled';                                     /* known CSP, not in the run */
